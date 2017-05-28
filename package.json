@@ -1,0 +1,38 @@
+{
+  "name": "moer",
+  "version": "0.0.0",
+  "description": "一个前端MVC框架 (先占坑)",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run lint",
+    "fix": "eslint --fix --ext .js webpack lib",
+    "lint": "eslint --ext .js webpack lib",
+    "dev": "webpack-dev-server --config webpack/dev.js --content-base webpack/dev --hot --inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://mengb.net/coding.php/moer"
+  },
+  "author": "Shirasawa",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "webpack": "^2.6.0",
+    "webpack-dev-server": "^2.4.5"
+  },
+  "dependencies": {}
+}

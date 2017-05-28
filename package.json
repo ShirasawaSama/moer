@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run lint",
-    "fix": "eslint --fix --ext .js webpack lib",
-    "lint": "eslint --ext .js webpack lib",
+    "precommit": "npm test",
+    "fix": "eslint --fix --ext .js webpack src",
+    "lint": "eslint --ext .js webpack src",
     "dev": "webpack-dev-server --config webpack/dev.js --content-base webpack/dev --hot --inline"
   },
   "repository": {
@@ -31,6 +32,7 @@
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.13.3",
     "webpack": "^2.6.0",
     "webpack-dev-server": "^2.4.5"
   },

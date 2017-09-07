@@ -6,8 +6,8 @@ const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^or
  *  If `value` is `null`, the attribute/handler will be removed.
  *  @param {Element} node  An element to mutate
  *  @param {string} name  The name/key to set, such as an event or attribute name
- *  @param {any} old  The last value that was set for this name/node pair
- *  @param {any} value  An attribute value, such as a function to be used as an event handler
+ *  @param {const} old  The last value that was set for this name/node pair
+ *  @param {const} value  An attribute value, such as a function to be used as an event handler
  *  @param {Boolean} isSvg  Are we currently diffing inside an svg?
  *  @private
  */

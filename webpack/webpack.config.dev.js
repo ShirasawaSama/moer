@@ -2,6 +2,9 @@ const webpack = require('webpack')
 const { readFileSync } = require('fs')
 const { join } = require('path')
 
+const options = JSON.parse(readFileSync('.babelrc'))
+options.plugins.push(join(__dirname, '../../babel-plugin-moer/index.js'))
+
 module.exports = {
   devtool: 'cheap-module-inline-source-map',
   entry: {
@@ -19,7 +22,7 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: JSON.parse(readFileSync('.babelrc'))
+          options
         }
       }
     ]

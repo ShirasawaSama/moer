@@ -1,4 +1,4 @@
 export Element from './Element'
-export renderer from './renderer'
+export render from './render'
 export connect from './connect'
 export subscriber from './subscriber'

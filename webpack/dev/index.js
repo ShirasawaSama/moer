@@ -1,39 +1,39 @@
-import { renderer, Element, connect, subscriber } from '../../src'
-
-@subscriber
+import { render, Element, connect } from '../../src'
 class Button extends Element {
-  render () {
-    return [{
-      type: 'div',
-      class: 'btn',
-      children: [{
-        type: 'button',
-        children: [{
-          type: 'div',
-          children: [{
-            type: 'div',
-            children: [{
-              type: 'span',
-              children: [this.props.text]
-            }]
-          }]
-        }]
-      }]
-    }]
+  render (d) {
+    return () => {
+      d.div({ class: 'btn' }); {
+        d.button(); {
+          d.div(); {
+            d.div(); {
+              d.span({ class: this.props.clazz }); `${this.props.text}`
+            }
+          }
+        }
+      }
+    }
   }
 }
 @connect(['index.aaa'])
 class Index extends Element {
-  render () {
-    return [{
-      type: 'div',
-      children: ['666', new Button({ text: this.store.text.first.second })]
-    }]
+  render (d) {
+    return () => {
+      d.div({ class: 'test' }); {
+        666
+        Button({
+          text: this.store.text.first.second,
+          clazz: this.store.text.pp
+        }); {}
+        `Text: ${this.store.text.kk}`
+      }
+    }
   }
 }
-
 const data = {
-  text: { first: { second: '按钮2333' } }
+  text: { first: { second: '按钮2333' }, kk: 'before', pp: '' }
 }
-window.d = renderer(new Index(), document.getElementById('app'), data)
-window.c = t => (window.d.text.first.second = t || 'sss')
+window.d = render(new Index(), document.getElementById('app'), data)
+window.c = t => (window.d.text.kk = t || 'after')
+window.s = t => (window.d.text.pp = t || 'red')
+window.c()
+window.s()

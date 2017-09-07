@@ -9,8 +9,9 @@ export default (data, subscribe, handler) => {
     Object.entries(data).forEach(([key, value]) => (data[key] = addProxy(value, name + '.' + key)))
     return new Proxy(data, {
       set (self, key, value) {
+        self[key] = value
         subscribe(name)
-        return (self[key] = value)
+        return value
       },
       get (self, key) {
         if (handler.current) {

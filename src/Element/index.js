@@ -6,4 +6,8 @@ export default class Element {
   render () {
     return null
   }
+  setChildren (children) {
+    this.children = children
+    return this
+  }
 }

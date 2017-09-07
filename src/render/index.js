@@ -5,12 +5,13 @@ import diff from '../diff'
 
 const ELM = Symbol('Element')
 export default (node, dom, data = {}) => {
-  var subscribers = { current: null, listener: {}, actions: {} }
-  var elms = {}
+  if (typeof dom.appendChild !== 'function') throw new Error('Args[1] must be a html element!')
+  const subscribers = { current: null, listener: {}, actions: {} }
+  const elms = {}
   data = addProxy(data, subscribe, subscribers)
-  var result = gen(node)
+  const result = gen(node)
   subscribers.current = null
-  if (dom.appendChild) render(result, dom)
+  render(result, dom)
   return data
 
   function getValue (array, id, i = 0) {
@@ -19,8 +20,9 @@ export default (node, dom, data = {}) => {
   function subscribe (name) {
     if (!subscribers.actions[name]) return
     subscribers.actions[name].forEach(symbol => {
-      var dom = getValue(result, elms[symbol].split(','))
-      diff(dom, dom[ELM].render()) // TODO
+      const ids = elms[symbol].split(',')
+      const vdom = getValue(result, ids)
+      diff(vdom, vdom[ELM].render(), dom, result, ids) // TODO
     })
   }
 
@@ -31,11 +33,12 @@ export default (node, dom, data = {}) => {
           return document.createTextNode(node)
         case 'object':
           if (Array.isArray(node)) return node.forEach(node => parent.appendChild(render(node, parent)))
-          var { type = 'div', children, ...props } = node
-          type = type.toLowerCase()
-          var isSvg = type === 'svg'
-          var elm = isSvg ? document.createElementNS('http://www.w3.org/2000/svg', 'svg') : document.createElement(type)
-          Object.entries(props).forEach(([key, value]) => setAccessor(elm, key, elm[key], value, isSvg))
+          const { type = 'div', children, args } = node
+          const isSvg = type === 'svg'
+          const elm = isSvg
+            ? document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+            : document.createElement(type)
+          args && Object.entries(args).forEach(([key, value]) => setAccessor(elm, key, elm[key], value, isSvg))
           if (Array.isArray(children)) children.forEach(node => (node = render(node, elm)) && elm.appendChild(node))
           return elm
       }
@@ -56,7 +59,7 @@ export default (node, dom, data = {}) => {
     return null
   }
   function formatArray (array) {
-    var parent = []
+    const parent = []
     array.forEach(node => {
       if (Array.isArray(node = format(node))) {
         node.forEach(node => parent.push(format(node)))
@@ -65,9 +68,9 @@ export default (node, dom, data = {}) => {
     return parent
   }
   function gen (node, id = '0') {
-    var value = node
-    if (node instanceof Element && node.render) {
-      var symbol
+    const value = node
+    if (node instanceof Element) {
+      let symbol
       if (node.__connected && !node.store) {
         symbol = node.__symbol
         subscribers.current = symbol
@@ -77,9 +80,9 @@ export default (node, dom, data = {}) => {
       }
       node = node.render()
       if (symbol) {
-        var array = subscribers.listener[symbol]
-        var actions = []
-        var unless = array.reduce((prev, key) => (++prev[key] || (prev[key] = 1)) && prev, {})
+        const array = subscribers.listener[symbol]
+        const actions = []
+        const unless = array.reduce((prev, key) => (++prev[key] || (prev[key] = 1)) && prev, {})
         array.forEach((key, i) => (unless[key] > 1 || !array[++i] || !array[i].includes(key)) &&
           !actions.includes(key) && actions.push(key))
         subscribers.listener[symbol] = actions

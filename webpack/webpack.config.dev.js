@@ -1,9 +1,10 @@
 const webpack = require('webpack')
-const { readFileSync } = require('fs')
+const { readFileSync, existsSync } = require('fs')
 const { join } = require('path')
 
 const options = JSON.parse(readFileSync('.babelrc'))
-options.plugins.push(join(__dirname, '../../babel-plugin-moer/index.js'))
+const moer = join(__dirname, '../../babel-plugin-moer/index.js')
+options.plugins.push(existsSync(moer) ? moer : 'moer')
 
 module.exports = {
   devtool: 'cheap-module-inline-source-map',

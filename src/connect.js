@@ -1,8 +1,2 @@
-export default states => {
-  if (!Array.isArray(states)) {
-    states = []
-  }
-  return Class => !states.length ? Class : class Connected extends Class {
-    __connected = true
-  }
-}
+import { CONNECTED } from './symbols'
+export default Class => class Connected extends Class { [CONNECTED] = true }

@@ -12,7 +12,7 @@ const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^or
  *  @private
  */
 export default (node, name, old, value, isSvg) => {
-  if (name === 'class' && !isSvg) {
+  if (name === 'className' && !isSvg) {
     node.className = value || ''
   } else if (name === 'style') {
     if (!value || typeof value === 'string' || typeof old === 'string') {

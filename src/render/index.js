@@ -1,14 +1,24 @@
+import merge from 'lodash/merge'
 import addProxy from '../proxy'
 import Element from '../Element'
-import setAccessor from './setAccessor'
+import render from './render'
 import diff from '../diff'
+import { ELEMENT_ID, ELEMENT, CONNECTED } from '../symbols'
 
-const ELM = Symbol('Element')
-export default (node, dom, data = {}) => {
-  if (typeof dom.appendChild !== 'function') throw new Error('Args[1] must be a html element!')
+export default (node, dom, data, models) => {
   const subscribers = { current: null, listener: {}, actions: {} }
   const elms = {}
-  data = addProxy(data, subscribe, subscribers)
+  data = addProxy(
+    models.reduce((p, m) => typeof m.init === 'object' ? merge(p, m.init) : p, data),
+    subscribe,
+    subscribers
+  )
+  models = models.reduce((p, m) => {
+    m.store = data
+    p[m.name] = m
+    return p
+  }, {})
+  Object.values(models).forEach(m => (m.models = models))
   const result = gen(node)
   subscribers.current = null
   render(result, dom)
@@ -22,28 +32,8 @@ export default (node, dom, data = {}) => {
     subscribers.actions[name].forEach(symbol => {
       const ids = elms[symbol].split(',')
       const vdom = getValue(result, ids)
-      diff(vdom, vdom[ELM].render(), dom, result, ids) // TODO
+      diff(vdom, vdom[ELEMENT].render(), dom, result)
     })
-  }
-
-  function render (node, parent) {
-    if (node !== null && parent) {
-      switch (typeof node) {
-        case 'string':
-          return document.createTextNode(node)
-        case 'object':
-          if (Array.isArray(node)) return node.forEach(node => parent.appendChild(render(node, parent)))
-          const { type = 'div', children, args } = node
-          const isSvg = type === 'svg'
-          const elm = isSvg
-            ? document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-            : document.createElement(type)
-          args && Object.entries(args).forEach(([key, value]) => setAccessor(elm, key, elm[key], value, isSvg))
-          if (Array.isArray(children)) children.forEach(node => (node = render(node, elm)) && elm.appendChild(node))
-          return elm
-      }
-    }
-    return document.createComment('empty')
   }
 
   function format (node) {
@@ -71,11 +61,12 @@ export default (node, dom, data = {}) => {
     const value = node
     if (node instanceof Element) {
       let symbol
-      if (node.__connected && !node.store) {
-        symbol = node.__symbol
+      if (node[CONNECTED] && !node.store) {
+        symbol = node[ELEMENT_ID]
         subscribers.current = symbol
         subscribers.listener[symbol] = []
         node.store = data
+        node.models = models
         node.state = {}
       }
       node = node.render()
@@ -94,7 +85,7 @@ export default (node, dom, data = {}) => {
     if (node === null) return null
     if (Array.isArray(node)) node = formatArray(node).map((node, i) => gen(node, id + ',' + i))
     else if (Array.isArray(node.children)) node.children = formatArray(node.children).map((node, i) => gen(node, id + ',' + i))
-    if (Array.isArray(node)) Object.defineProperty(node, ELM, { value, enumerable: false })
+    if (Array.isArray(node)) Object.defineProperty(node, ELEMENT, { value, enumerable: false })
     return node
   }
 }

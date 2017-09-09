@@ -1,5 +1,6 @@
+import { ELEMENT_ID } from './symbols'
 export default class Element {
-  __symbol = Symbol('moer#Element')
+  [ELEMENT_ID] = Symbol('moer#Element')
   constructor (props = {}) {
     this.props = props
   }

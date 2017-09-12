@@ -4,7 +4,7 @@ const { join } = require('path')
 
 const options = JSON.parse(readFileSync('.babelrc'))
 const moer = join(__dirname, '../../babel-plugin-moer/index.js')
-options.plugins.push(existsSync(moer) ? moer : 'moer')
+options.plugins.unshift(existsSync(moer) ? moer : 'moer')
 
 module.exports = {
   devtool: 'cheap-module-inline-source-map',

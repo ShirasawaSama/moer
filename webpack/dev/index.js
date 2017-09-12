@@ -1,12 +1,13 @@
 import moer, { Element, connect } from '../..'
+
 class Button extends Element {
   render (d) {
     return () => {
       d.div({ className: 'btn' }); {
-        d.button({ onClick: this.props.click }); {
+        d.button({ onClick: this.props.click, id: 'ggg' }); {
           d.div(); {
             d.div(); {
-              d.span({ className: this.props.clazz }); `${this.props.text}`
+              d.span({ className: this.props.clazz }); this.children
             }
           }
         }
@@ -17,7 +18,6 @@ class Button extends Element {
 @connect
 class Index extends Element {
   render (d) {
-    const arr = ['第一个元素', '第二个元素', '第三个元素']
     return () => {
       d.div({ className: 'test' }); {
         `已+: ${this.store.test}s`
@@ -25,13 +25,15 @@ class Index extends Element {
           text: this.store.text.first.second,
           clazz: this.store.text.pp,
           click: () => this.models.home.addNumber(4)
-        }); {}
+        }); { '+1s' }
         `Text: ${this.store.text.kk}`
         if (this.store.show) {
           ' ShowText'
         }
-        for (const i of arr) {
-          d.p({ className: 'red' }); {
+        d.input({ onInput: e => (this.store.input = e.target.value) }); {}
+        `Text: ${this.store.input}`
+        for (const i of this.store.arr) {
+          d.p({ className: [this.store.input && 'red'] }); {
             `${i}`
           }
         }
@@ -41,11 +43,14 @@ class Index extends Element {
 }
 const data = {
   show: false,
+  arr: ['第一个元素', '第二个元素', '第三个元素'],
   text: { first: { second: '+1s' }, kk: 'before', pp: '' }
 }
-window.d = moer({ node: new Index(), data, models: require.context('./models', false, /\.(j|t)s$/) })
+const node = new Index()
+window.node = node
+window.d = moer({ node, data, models: require.context('./models', false, /\.(j|t)s$/) })
 window.c = t => (window.d.text.kk = t || 'after')
 window.s = t => (window.d.text.pp = t || 'red')
 window.o = () => (window.d.show = !window.d.show)
-window.c()
-window.s()
+// window.c()
+// window.s()

@@ -4,7 +4,6 @@ export default class Home {
     test: 0
   }
   addNumber () {
-    console.log(this.models)
     this.store.test = this.store.test + 1
   }
 }

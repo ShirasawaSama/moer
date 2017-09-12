@@ -9,18 +9,27 @@ export default (data, subscribe, handler) => {
           const result = Array.prototype[k].apply(this, args)
           subscribe(name)
           return result
-        }) && p, {}))
+        }) && p, {
+          ...Array.prototype,
+          set (i, v) {
+            this[i] = v
+            subscribe(name)
+            return v
+          }
+        }))
     }
     Object.entries(data).forEach(([key, value]) => (data[key] = addProxy(value, name + '.' + key)))
     return new Proxy(data, {
       set (target, key, value, receiver) {
+        const n = name + '.' + key
+        if (typeof value === 'object') value = addProxy(value, n)
         const result = Reflect.set(target, key, value, receiver)
-        subscribe(name)
+        subscribe(n)
         return result
       },
       get (target, key, receiver) {
         if (handler.current) {
-          handler.listener[handler.current].push(name)
+          handler.listener[handler.current].push(name + '.' + key)
         }
         return Reflect.get(target, key, receiver)
       }

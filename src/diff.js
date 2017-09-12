@@ -4,7 +4,13 @@ import renderNew from './render/render'
 import setAccessor from './render/setAccessor'
 
 export default function diff (a, b, dom) {
-  if (b instanceof Element) return b.render().forEach((node, i) => diff(a, node, dom))
+  if (b instanceof Element) {
+    if (typeof b.preRender === 'function') b.preRender()
+    const result = b.render()
+    if (Array.isArray(result)) diff(a, result, dom)
+    if (typeof b.postRender === 'function') b.postRender()
+    return
+  }
   const t = type(b)
   if (t !== 3 && type(a) !== t) { // 类型不同直接重新渲染
     if (t === 1) return document.createTextNode(b)
@@ -18,9 +24,10 @@ export default function diff (a, b, dom) {
       const { type, children, args } = b
       const isSvg = type === 'svg'
       if (a.type === type) { // 若元素类型没改变
-        const [diffs, not] = difference(a.args, args) // 比较元素args
-        if (diffs.length) diffs.forEach(([k, v]) => setAccessor(dom, k, dom[k], v, isSvg))
-        if (not.length) not.forEach(k => setAccessor(dom, k, dom[k], null, isSvg))
+        const aargs = a.args || {}
+        const [diffs, not] = difference(aargs, args) // 比较元素args
+        if (diffs.length) diffs.forEach(([k, v]) => setAccessor(dom, k, aargs[k], v, isSvg))
+        if (not.length) not.forEach(([k, v]) => setAccessor(dom, k, v, null, isSvg))
         if (Array.isArray(children)) {
           clearElm(dom, children.length, a.children)
           children.forEach((node, i) => {
@@ -53,10 +60,8 @@ function renderElm (type = 'div', args, children, isSvg) {
 function clearElm (elm, start, a) {
   const children = elm.childNodes
   if (children.length > start) {
-    for (let i = start; i < children.length; i++) {
-      elm.removeChild(children[i])
-      a.splice(start)
-    }
+    for (let i = start; i < children.length; i++) elm.removeChild(children[i])
+    a.splice(start)
   }
 }
 
@@ -72,7 +77,7 @@ function update (node, i, a, dom) {
 function difference (a = {}, b = {}) {
   return [
     Object.entries(b).filter(n => !equal(n[1], a[n[0]])),
-    Object.keys(a).filter(c => !b[c])
+    Object.entries(a).filter(c => !b[c[0]])
   ]
 }
 

@@ -1,13 +1,11 @@
-import { ELEMENT_ID } from './symbols'
 export default class Element {
-  [ELEMENT_ID] = Symbol('moer#Element')
   constructor (props = {}) {
     this.props = props
   }
   render () {
     return null
   }
-  setChildren (children) {
+  init (children) {
     this.children = children
     return this
   }

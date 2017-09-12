@@ -16,6 +16,14 @@ class Button extends Element {
   }
 }
 @connect
+class Text extends Element {
+  render (d) {
+    return () => {
+      ` ${this.store.uu}`
+    }
+  }
+}
+@connect
 class Index extends Element {
   render (d) {
     return () => {
@@ -28,10 +36,10 @@ class Index extends Element {
         }); { '+1s' }
         `Text: ${this.store.text.kk}`
         if (this.store.show) {
-          ' ShowText'
+          new Text(); {}
         }
-        d.input({ onInput: e => (this.store.input = e.target.value) }); {}
-        `Text: ${this.store.input}`
+        d.input({ onInput: e => (this.store.input = e.target.value), value: this.store.input }); {}
+        ` Input: ${this.store.input}`
         for (const i of this.store.arr) {
           d.p({ className: [this.store.input && 'red'] }); {
             `${i}`
@@ -42,6 +50,8 @@ class Index extends Element {
   }
 }
 const data = {
+  input: '',
+  uu: 'before',
   show: false,
   arr: ['第一个元素', '第二个元素', '第三个元素'],
   text: { first: { second: '+1s' }, kk: 'before', pp: '' }
@@ -52,5 +62,6 @@ window.d = moer({ node, data, models: require.context('./models', false, /\.(j|t
 window.c = t => (window.d.text.kk = t || 'after')
 window.s = t => (window.d.text.pp = t || 'red')
 window.o = () => (window.d.show = !window.d.show)
+window.q = () => (window.d.uu = 'after')
 // window.c()
 // window.s()

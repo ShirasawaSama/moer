@@ -1,8 +1,11 @@
 /* eslint-disable no-proto */
 import render from './render'
+import { STATE } from './symbols'
 
 export default ({ node, root = document.getElementById('root'), data = {}, models }) => {
   if (!''.__proto__ || !window.Proxy) throw new Error('The browser does not support Moer.js!')
+  if (typeof data !== 'object' ||
+    Array.isArray(data)) throw new Error('Data must be a Object ant not be an Array!')
   if (typeof root === 'string') root = document.querySelector(root)
   if (typeof root.appendChild !== 'function') throw new Error('Root must be a html element!')
   if (typeof models === 'function') {
@@ -15,6 +18,7 @@ export default ({ node, root = document.getElementById('root'), data = {}, model
         else if (type === 'object') return model.default
       })
   }
+  data[STATE] = {}
   return render(
     node,
     root,

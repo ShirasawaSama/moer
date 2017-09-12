@@ -2,7 +2,7 @@ import merge from 'lodash/merge'
 import addProxy from '../proxy'
 import Element from '../Element'
 import render from './render'
-import diff from '../diff'
+import getDiff from '../diff'
 import { ELEMENT_ID, ELEMENT, CONNECTED } from '../symbols'
 
 export default (node, dom, data, models) => {
@@ -22,20 +22,26 @@ export default (node, dom, data, models) => {
   Object.values(models).forEach(m => (m.models = models))
   const result = gen(node)
   subscribers.current = null
-  render(result, dom)
+  dom.appendChild(render(result, dom))
   postRenders.forEach(fn => fn())
-  postRenders = void 0
+  postRenders = null
+  const diff = getDiff(subscribers, data, models, elms)
   return data
 
   function getValue (array, id, i = 0) {
     return Array.isArray(array) && id.length - 1 > i ? getValue(array[id[i++]], id, i) : array
   }
+  function getElement (elm, id, i = 0) {
+    return elm.childNodes.length && id.length - 1 > i ? getElement(elm.childNodes[id[i++]], id, i) : elm.childNodes[0]
+  }
   function subscribe (name) {
     if (!subscribers.actions[name]) return
     subscribers.actions[name].forEach(symbol => {
-      const ids = elms[symbol].split(',')
+      const id = elms[symbol]
+      const ids = id.split(',')
       const vdom = getValue(result, ids)
-      diff(vdom, vdom[ELEMENT].render(), dom)
+      diff(vdom, vdom[ELEMENT].render(), getElement(dom, ids), id)
+      subscribers.current = null
     })
   }
 
@@ -46,14 +52,9 @@ export default (node, dom, data, models) => {
       case 'string': // eslint-disable-line
         return node
       case 'object':
-        if (node instanceof Element) return node.render()
         if (node) return node
     }
     return null
-  }
-  function formatArray (array) {
-    let parent = []
-    return parent.concat(array.filter(node => !(Array.isArray(node) && (parent = parent.concat(node)))))
   }
   function gen (node, id = '0') {
     const value = node
@@ -65,11 +66,10 @@ export default (node, dom, data, models) => {
         subscribers.listener[symbol] = []
         node.store = data
         node.models = models
-        node.state = {}
       }
       if (typeof node.preRender === 'function') node.preRender()
-      node = node.render()
       if (typeof node.postRender === 'function') postRenders.push(node.postRender.bind(node))
+      node = node.render()
       if (symbol) {
         const array = subscribers.listener[symbol]
         const actions = []
@@ -81,16 +81,14 @@ export default (node, dom, data, models) => {
           ? subscribers.actions[action].push(symbol) : (subscribers.actions[action] = [symbol]))
         elms[symbol] = id
       }
-    } else node = format(node)
-    if (node === null) return null
-    if (Array.isArray(node)) {
-      return Object.defineProperty(
-        formatArray(node).map((node, i) => gen(node, id + ',' + i)),
-        ELEMENT,
-        { value, enumerable: false }
-      )
-    } else if (Array.isArray(node.children)) {
-      node.children = formatArray(node.children).map((node, i) => gen(node, id + ',' + i))
+      if (node === null) return null
+      node[ELEMENT] = value
+    } else {
+      node = format(node)
+      if (node === null) return null
+    }
+    if (Array.isArray(node.children)) {
+      node.children = node.children.map((node, i) => gen(node, id + ',' + i))
     }
     return node
   }

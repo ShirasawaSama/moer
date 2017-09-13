@@ -1,4 +1,4 @@
-import moer, { Element, connect } from '../..'
+import moer, { Element, connect } from 'moer'
 
 class Button extends Element {
   render (d) {
@@ -17,9 +17,10 @@ class Button extends Element {
 }
 @connect
 class Text extends Element {
+  state = { text: 0 }
   render (d) {
     return () => {
-      ` ${this.store.uu}`
+      new Button({ click: () => this.state.text++ }); { `${this.state.text}` }
     }
   }
 }
@@ -36,7 +37,7 @@ class Index extends Element {
         }); { '+1s' }
         `Text: ${this.store.text.kk}`
         if (this.store.show) {
-          new Text(); {}
+          Text(); {}
         }
         d.input({ onInput: e => (this.store.input = e.target.value), value: this.store.input }); {}
         ` Input: ${this.store.input}`
@@ -52,7 +53,7 @@ class Index extends Element {
 const data = {
   input: '',
   uu: 'before',
-  show: false,
+  show: true,
   arr: ['第一个元素', '第二个元素', '第三个元素'],
   text: { first: { second: '+1s' }, kk: 'before', pp: '' }
 }

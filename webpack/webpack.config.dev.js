@@ -16,6 +16,11 @@ module.exports = {
     publicPath: '/',
     filename: 'bundle.js'
   },
+  resolve: {
+    alias: {
+      moer: join(__dirname, '..')
+    }
+  },
   module: {
     rules: [
       {

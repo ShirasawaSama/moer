@@ -1,10 +1,11 @@
 import setAccessor from './setAccessor'
 
 export default function render (node, parent) {
-  if (node !== null && parent) {
+  if (!parent) parent = render(node, true)
+  if (node !== null) {
     switch (typeof node) {
-      case 'string':
-        return document.createTextNode(node)
+      case 'number':
+      case 'string': return document.createTextNode(node)
       case 'object':
         if (Array.isArray(node)) return node.forEach(node => parent.appendChild(render(node, parent)))
         let { type = 'div', children, args } = node

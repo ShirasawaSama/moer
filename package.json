@@ -1,14 +1,15 @@
 {
   "name": "moer",
-  "version": "0.0.0",
-  "description": "一个前端MVC框架 (先占坑)",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "一个前端框架",
+  "main": "dist/index.js",
   "scripts": {
     "test": "npm run lint",
     "precommit": "npm test",
-    "fix": "eslint --fix --ext .js webpack src",
-    "lint": "eslint --ext .js webpack src",
-    "dev": "webpack-dev-server --config webpack/webpack.config.dev.js --content-base webpack/dev --hot --inline"
+    "fix": "eslint --fix --ext .js index.js rollup.config.js src",
+    "lint": "eslint --ext .js index.js rollup.config.js src",
+    "build": "rollup -c",
+    "prepublish": "npm run test && npm run build"
   },
   "repository": {
     "type": "git",
@@ -17,15 +18,9 @@
   "author": "Shirasawa",
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-moer": "*",
     "eslint": "^4.6.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",
@@ -33,8 +28,13 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.14.3",
-    "webpack": "^3.5.6",
-    "webpack-dev-server": "^2.7.1"
+    "jest": "^21.1.0",
+    "rollup": "^0.49.3",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-commonjs": "^8.2.1",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^2.0.1",
+    "uglify-es": "^3.1.0"
   },
   "dependencies": {
     "lodash": "^4.17.4"

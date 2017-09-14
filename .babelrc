@@ -1,12 +1,5 @@
 {
   "presets": [
-    "es2015",
-    "stage-0",
-    "env"
-  ],
-  "plugins": [
-    "transform-runtime",
-    "transform-decorators-legacy",
-    "transform-class-properties"
+    "moer"
   ]
 }

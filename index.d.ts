@@ -7,7 +7,8 @@ export default function moer ({}: {
   node: Element,
   root?: HTMLElement|string,
   data?: object|Array<any>,
-  models?: Array<string>|Function
+  models?: Array<string>|Function,
+  document?: object
 }): any
 export var connect: (Class: Function) => any
 export type Types = {

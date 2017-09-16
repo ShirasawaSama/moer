@@ -11,7 +11,7 @@ export default (subscribers, data, models, elms, postRenders) => function render
   }
   if (typeof node.preRender === 'function') node.preRender()
   node = node.render()
-  if (typeof node.postRender === 'function') {
+  if (node && typeof node.postRender === 'function') {
     postRenders ? postRenders.push(node.postRender.bind(node)) : node.postRender()
   }
   if (symbol) {

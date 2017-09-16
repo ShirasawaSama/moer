@@ -11,5 +11,8 @@
     "no-lone-blocks": ["off"],
     "no-unused-expressions": "off",
     "no-new": "off"
+  },
+  "env": {
+    "jest": true
   }
 }

@@ -1,10 +1,11 @@
-import equal from 'lodash/isEqual'
+import equal from 'lodash.isequal'
 import Element from './Element'
-import renderNew from './render/render'
+import getRender from './render/render'
 import setAccessor from './render/setAccessor'
 import getElementRender from './render/renderElement'
 
-export default (subscribers, store, models, elms) => {
+export default (subscribers, store, models, elms, document) => {
+  const renderNew = getRender(document)
   const renderElm = getElementRender(subscribers, store, models, elms)
   function diff (a, b, dom, id = 0) {
     if (b instanceof Element) b = renderElm(b, id)

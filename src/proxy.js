@@ -1,4 +1,5 @@
 import { keySplit } from './symbols'
+import PolyfillProxy from './proxy-polyfill'
 
 export default (data, subscribe, handler) => {
   if (typeof data !== 'object') throw new TypeError('必须传入一个Object')
@@ -16,13 +17,13 @@ export default (data, subscribe, handler) => {
           set (i, v) {
             this[i] = v
             subscribe(name)
-            return v
+            return this
           }
         }))
     }
     Object.entries(data).forEach(([key, value]) =>
       (data[key] = addProxy(value, name + keySplit + key)))
-    return new Proxy(data, {
+    return new PolyfillProxy(data, {
       set (target, key, value, receiver) {
         const n = name + keySplit + key
         if (typeof value === 'object') value = addProxy(value, n)

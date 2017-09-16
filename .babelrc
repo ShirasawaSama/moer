@@ -1,5 +1,13 @@
 {
   "presets": [
-    "moer"
+    [
+      "moer",
+      {
+        "debug": true,
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
   ]
 }

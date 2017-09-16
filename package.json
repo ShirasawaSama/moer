@@ -1,10 +1,11 @@
 {
   "name": "moer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "一个前端框架",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
-    "test": "npm run lint",
+    "test": "ava test --verbose && npm run lint",
+    "cov": "nyc ava test",
     "precommit": "npm test",
     "fix": "eslint --fix --ext .js index.js rollup.config.js src",
     "lint": "eslint --ext .js index.js rollup.config.js src",
@@ -15,12 +16,17 @@
     "type": "git",
     "url": "http://mengb.net/coding.php/moer"
   },
+  "ava": {
+    "babel": "inherit",
+    "require": ["babel-register"]
+  },
   "author": "Shirasawa",
   "license": "MIT",
   "devDependencies": {
+    "ava": "^0.22.0",
     "babel-eslint": "^7.2.3",
     "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-moer": "*",
+    "babel-preset-moer": "^0.1.2",
     "eslint": "^4.6.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",
@@ -28,7 +34,8 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.14.3",
-    "jest": "^21.1.0",
+    "jsdom": "^11.2.0",
+    "nyc": "^11.2.1",
     "rollup": "^0.49.3",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.2.1",
@@ -37,6 +44,6 @@
     "uglify-es": "^3.1.0"
   },
   "dependencies": {
-    "lodash": "^4.17.4"
+    "lodash.isequal": "^4.5.0"
   }
 }

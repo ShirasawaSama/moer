@@ -26,7 +26,7 @@ export default (data, subscribe, handler) => {
     return new PolyfillProxy(data, {
       set (target, key, value, receiver) {
         const n = name + keySplit + key
-        if (typeof value === 'object') value = addProxy(value, n)
+        if (typeof value === 'object' && value !== null) value = addProxy(value, n)
         const result = Reflect.set(target, key, value, receiver)
         subscribe(n)
         return result

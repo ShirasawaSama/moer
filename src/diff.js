@@ -52,7 +52,7 @@ function clearElm (elm, start, a) {
 function difference (a = {}, b = {}) {
   return [
     Object.entries(b).filter(n => !equal(n[1], a[n[0]])),
-    Object.entries(a).filter(c => !b[c[0]])
+    Object.entries(a).filter(c => !(c[0] in b))
   ]
 }
 function type (obj) {

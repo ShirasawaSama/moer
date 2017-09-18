@@ -5,14 +5,14 @@ const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^or
 export default (node, name, old, value, isSvg) => {
   if (name === 'className' && !isSvg) {
     node.className = Array.isArray(value)
-      ? value.filter(v => !!v).join(' ')
+      ? value.filter(Boolean).join(' ')
       : node.className = value || ''
   } else if (name === 'style') {
     const type = typeof value
     const to = typeof old
     if (!value || type === 'string' || to === 'string') node.style.cssText = value || ''
     if (value && type === 'object') {
-      if (to !== 'string') {
+      if (to === 'object' && old) {
         Object.keys(old).forEach(i => !(i in value) && (node.style[i] = ''))
       }
       for (const i in value) {

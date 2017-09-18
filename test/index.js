@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import { JSDOM } from 'jsdom'
 import start from '../src/start'
 import addProxy from '../src/proxy'

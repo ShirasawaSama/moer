@@ -1,4 +1,5 @@
 import render from './render'
+import { ELEMENT_ID } from './symbols'
 
 export default ({
   node,
@@ -20,6 +21,7 @@ export default ({
         return type === 'function' ? model : type === 'object' && model.default
       })
   }
+  if (!node[ELEMENT_ID]) node.init((new Date().getTime() + Math.random()) * 100000)
   return render(
     document,
     node,

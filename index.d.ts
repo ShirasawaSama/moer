@@ -6,7 +6,7 @@ export class Element {
 export default function moer ({}: {
   node: Element,
   root?: HTMLElement|string,
-  data?: object|Array<any>,
+  data?: any,
   models?: Array<string>|Function,
   document?: object
 }): any

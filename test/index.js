@@ -5,19 +5,7 @@ import addProxy from '../src/proxy'
 import Element from '../src/Element'
 import connect from '../src/connect'
 import { PolyfillProxy, BaseProxy } from '../src/proxy-polyfill'
-import { ELEMENT_ID, CONNECTED, keySplit } from '../src/symbols'
-
-test('Element', t => {
-  const id = new Date().getTime()
-  const children = ['test1', 'test2']
-  const props = { className: 'test', id: 'test' }
-
-  const elm = new Element(props).init(id, children)
-
-  t.is(elm[ELEMENT_ID], id, '组件ID')
-  t.is(elm.children, children, '组件Children')
-  t.deepEqual(elm.props, props, '组件Props')
-})
+import { CONNECTED, keySplit } from '../src/symbols'
 
 test('connect', t => {
   @connect

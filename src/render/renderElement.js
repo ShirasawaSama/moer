@@ -3,17 +3,25 @@ import { CONNECTED, ELEMENT_ID } from '../symbols'
 
 export default (subscribers, data, models, elms, postRenders) => function renderElement (node, id) {
   let symbol
-  if (node[CONNECTED] && !node.store) {
-    symbol = node[ELEMENT_ID]
-    subscribers.current = symbol
-    subscribers.listener[symbol] = []
-    node.set(data, models)
+  if (!node.store) {
+    if (node[CONNECTED]) {
+      symbol = node[ELEMENT_ID]
+      subscribers.current = symbol
+      subscribers.listener[symbol] = []
+      node.set(data, models)
+    } else if (typeof node.state === 'object') {
+      symbol = node[ELEMENT_ID]
+      subscribers.current = symbol
+      subscribers.listener[symbol] = []
+      node.sets(data)
+    }
   }
   if (typeof node.preRender === 'function') node.preRender()
-  node = node.render()
-  if (node && typeof node.postRender === 'function') {
+  const result = node.render()
+  if (typeof node.postRender === 'function') {
     postRenders ? postRenders.push(node.postRender.bind(node)) : node.postRender()
   }
+  node = result
   if (symbol) {
     const array = subscribers.listener[symbol]
     const actions = []

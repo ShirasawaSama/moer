@@ -1,8 +1,8 @@
 {
   "name": "moer",
-  "version": "0.0.2",
-  "description": "一个前端框架",
-  "main": "index.js",
+  "version": "0.0.3",
+  "description": "一个滑稽的MVVM框架",
+  "main": "dist/index.js",
   "scripts": {
     "test": "ava test --verbose && npm run lint",
     "cov": "nyc ava test",
@@ -20,6 +20,13 @@
     "babel": "inherit",
     "require": ["babel-register"]
   },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "src",
+    "dist"
+  ],
+  "typings": "index.d.ts",
   "author": "Shirasawa",
   "license": "MIT",
   "devDependencies": {

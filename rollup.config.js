@@ -2,13 +2,12 @@ import nodeResolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
 import cjs from 'rollup-plugin-commonjs'
 import uglify from 'rollup-plugin-uglify'
-import { minify } from 'uglify-es'
 
 export default {
   strict: true,
   input: 'index.js',
   output: {
-    format: 'es',
+    format: 'cjs',
     file: 'dist/index.js',
     name: 'moer'
   },
@@ -16,15 +15,20 @@ export default {
     cjs(),
     nodeResolve({ main: true, jsnext: true }),
     uglify({
-      ecma: 6,
       compress: {
-        warnings: false
+        warnings: false,
+        collapse_vars: true,
+        evaluate: true,
+        unsafe: true,
+        pure_getters: true,
+        unused: true,
+        dead_code: true
       },
       output: {
         comments: false,
         ascii_only: true
       }
-    }, minify),
+    }),
     babel({
       exclude: 'node_modules/**',
       babelrc: false,

@@ -1,12 +1,15 @@
 // This code is from the Preact project.
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
+const n = 'http://www.w3.org/1999/xlink'
 
 export default (node, name, old, value, isSvg) => {
-  if (name === 'className' && !isSvg) {
-    node.className = Array.isArray(value)
-      ? value.filter(Boolean).join(' ')
-      : node.className = value || ''
+  if ((name === 'className' || name === 'class') && !isSvg) {
+    if (typeof value === 'object') {
+      node.className = Array.isArray(value)
+        ? value.filter(Boolean).join(' ')
+        : Object.keys(value).filter(key => !!value[key]).join(' ')
+    } else node.className = value || ''
   } else if (name === 'style') {
     const type = typeof value
     const to = typeof old
@@ -36,10 +39,10 @@ export default (node, name, old, value, isSvg) => {
   } else {
     const ns = isSvg && (name !== (name = name.replace(/^xlink:?/, '')))
     if (value == null || value === false) {
-      if (ns) node.removeAttributeNS('http://www.w3.org/1999/xlink', name.toLowerCase())
+      if (ns) node.removeAttributeNS(n, name.toLowerCase())
       else node.removeAttribute(name)
     } else if (typeof value !== 'function') {
-      if (ns) node.setAttributeNS('http://www.w3.org/1999/xlink', name.toLowerCase(), value)
+      if (ns) node.setAttributeNS(n, name.toLowerCase(), value)
       else node.setAttribute(name, value)
     }
   }

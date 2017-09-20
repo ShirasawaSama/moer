@@ -5,10 +5,15 @@
 ## 特性
 
 - 虚拟DOM
-- 服务端渲染
 - 双向绑定
 - Model层支持
-- 异步获取数据
+- Typescript支持
+- 支持异步获取数据
+- 服务端渲染 (大雾)
+
+## 语法
+
+[点此查看](./docs.md)
 
 ## 起步
 
@@ -24,6 +29,10 @@ npm install -g generator-moer
 ```bash
 yo moer
 ```
+
+## 感谢
+
+感谢 [@developit](https://github.com/developit) 的 [Preact](https://github.com/developit/preact) 项目, 本项目使用了部分该项目的源码. 该项目采用 [MIT License](https://github.com/developit/preact/blob/master/LICENSE) 开源协议
 
 ## 协议
 

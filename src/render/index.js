@@ -1,3 +1,4 @@
+import union from 'lodash/union'
 import addProxy from '../proxy'
 import Element from '../Element'
 import render from './render'
@@ -19,7 +20,7 @@ export default (document, node, dom, data, models) => {
   const renderElm = getElementRender(subscribers, data, models, elms, postRenders)
   const result = gen(node)
   subscribers.current = null
-  dom.appendChild(render(document)(result, dom))
+  if (result) dom.appendChild(render(document)(result, dom))
   postRenders.forEach(fn => fn())
   postRenders = null
   const diff = getDiff(subscribers, data, models, elms, document)
@@ -37,6 +38,7 @@ export default (document, node, dom, data, models) => {
     })
   }
   function gen (node, id = '0') {
+    if (!node) return
     const value = node
     if (node instanceof Element) {
       node = renderElm(node, id)
@@ -52,7 +54,7 @@ export default (document, node, dom, data, models) => {
   function unlock () {
     if (--lockTimes <= 0) {
       lockTimes = 0
-      new Set(actions).forEach(subscribe)
+      union(actions).forEach(subscribe)
       actions = null
     }
   }

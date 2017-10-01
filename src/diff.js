@@ -1,4 +1,4 @@
-import equal from 'lodash.isequal'
+import equal from 'lodash/isequal'
 import Element from './Element'
 import getRender from './render/render'
 import setAccessor from './render/setAccessor'
@@ -7,10 +7,10 @@ import getElementRender from './render/renderElement'
 export default (subscribers, store, models, elms, document) => {
   const renderNew = getRender(document)
   const renderElm = getElementRender(subscribers, store, models, elms)
-  function diff (a, b, dom, id = 0) {
+  function diff (a, b, dom, id = 0, index, parent) {
     if (b instanceof Element) b = renderElm(b, id)
-    const t = type(b)
-    if (t !== 3 && type(a) !== t) return renderNew(b) // 类型不同直接重新渲染
+    const t = getType(b)
+    if (t !== 3 && getType(a) !== t) return renderNew(b) // 类型不同直接重新渲染
     switch (t) {
       case 1: return a !== b && document.createTextNode(b)
       case 2:
@@ -22,30 +22,70 @@ export default (subscribers, store, models, elms, document) => {
           if (diffs.length) diffs.forEach(([k, v]) => setAccessor(dom, k, aargs[k], v, isSvg))
           if (not.length) not.forEach(([k, v]) => setAccessor(dom, k, v, null, isSvg))
           if (Array.isArray(children)) {
-            clearElm(dom, children.length, a.children)
+            let index = 0
             children.forEach((node, i) => {
-              const result = update(node, i, a.children[i], dom, id + ',' + i)
-              if (result) a.children[i] = result
+              index++
+              const child = dom && dom.childNodes[i]
+              const elm = diff(a.children[i], node, child, id + ',' + i, index, dom)
+              if (!elm) return
+              if (a.children[i] && child) dom.replaceChild(elm, child)
+              else dom.appendChild(elm)
+              a.children[i] = node
             })
+            if (!parent) {
+              clearElm(dom, children.reduce((p, v) => Array.isArray(v)
+                ? p - 1 + v.length : p, children.length))
+              a.children.splice(children.length)
+            }
           }
         } else return renderNew(b) // 若元素类型改变, 则重新渲染元素
+        break
+      case 3:
+        index--
+        if (!b.length) return
+        const post = b.reduce((p, v, i) => {
+          if (v && v.args && !isNull(v.args.key)) p[v.args.key] = i
+          return p
+        }, {})
+        const pre = a.filter((v, i) => {
+          if (v.args.key in post) return true
+          const child = parent.childNodes[i + index]
+          if (child) parent.removeChild(child)
+        }).reduce((p, v, i) => {
+          if (v && v.args && !isNull(v.args.key)) p[v.args.key] = i
+          return p
+        }, {})
+        b.forEach((node, i) => {
+          const pid = i + index
+          const child = parent.childNodes[pid]
+          if (getType(node) === 2 && node.args && !isNull(node.args.key)) {
+            if (node.args.key in pre) i = pre[node.args.key]
+            else if (a[i].args && a[i].args.key in post) {
+              const elm = renderNew(node)
+              if (child) parent.insertBefore(elm, child)
+              else parent.appendChild(elm)
+              a[i] = node
+              return
+            }
+          }
+          const elm = diff(a[i], node, child, id + ',' + pid, index, parent)
+          if (!elm) return
+          if (a[i] && child) parent.replaceChild(elm, child)
+          else parent.appendChild(elm)
+          a[i] = node
+        })
+        index += b.length
     }
-  }
-  function update (node, i, a, dom, id) {
-    const child = dom && dom.childNodes[i]
-    const elm = diff(a, node, child, id)
-    if (!elm) return
-    if (a && child) dom.replaceChild(elm, child)
-    else dom.appendChild(elm)
-    return node
   }
   return diff
 }
-function clearElm (elm, start, a) {
+function isNull (obj) {
+  return obj === null || typeof obj === 'undefined'
+}
+function clearElm (elm, start) {
   const children = elm.childNodes
-  if (children.length > start) {
-    for (let i = start; i < children.length; i++) elm.removeChild(children[i])
-    a.splice(start)
+  for (let i = children.length - start; i > 0; i--) {
+    elm.removeChild(children[children.length - 1])
   }
 }
 
@@ -55,9 +95,11 @@ function difference (a = {}, b = {}) {
     Object.entries(a).filter(c => !(c[0] in b))
   ]
 }
-function type (obj) {
+function getType (obj) {
   const t = typeof obj
   return t === 'string' || t === 'number'
     ? 1
-    : t === 'object' && !Array.isArray(obj) ? 2 : 0
+    : t === 'object'
+      ? Array.isArray(obj) ? 3 : 2
+      : 0
 }

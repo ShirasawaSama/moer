@@ -1,3 +1,5 @@
+/* eslint-disable no-proto */
+
 import { keySplit } from './symbols'
 import PolyfillProxy from './proxy-polyfill'
 
@@ -7,19 +9,18 @@ export default (data, subscribe, handler) => {
   function addProxy (data, name = '#ROOT#') {
     if (typeof data !== 'object') return data
     if (Array.isArray(data)) {
-      return Object.setPrototypeOf(data, ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse']
-        .reduce((p, k) => (p[k] = function (...args) {
+      ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse']
+        .forEach(k => (data[k] = function (...args) {
           const result = Array.prototype[k].apply(this, args)
           subscribe(name)
           return result
-        }) && p, {
-          ...Array.prototype,
-          set (i, v) {
-            this[i] = v
-            subscribe(name)
-            return this
-          }
         }))
+      data.set = function (i, v) {
+        this[i] = v
+        subscribe(name)
+        return this
+      }
+      return data
     }
     Object.entries(data).forEach(([key, value]) =>
       (data[key] = addProxy(value, name + keySplit + key)))

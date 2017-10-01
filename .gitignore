@@ -1,5 +1,7 @@
 # Dist
 /dist
+*.dev.js
+*.dev.js.map
 
 # Logs
 logs

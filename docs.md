@@ -61,3 +61,27 @@ class Index extends Element<void> {
   }
 }
 ```
+
+
+## Switch 语句
+
+```typescript
+import { Element, Types } from 'moer'
+
+const test = 'test'
+class Index extends Element<void> {
+  render (d: Types) {
+    return () => {
+      d.div(); {
+        switch (test) {
+          case 'a':
+          case 'test':
+            d.p(); 'test'
+            break
+          default: 'notest'
+        }
+      }
+    }
+  }
+}
+```

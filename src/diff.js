@@ -16,6 +16,23 @@ export default (subscribers, store, models, elms, document) => {
       case 2:
         const { type, children, args } = b
         if (a.type === type) { // 若元素类型没改变
+          if (type === 'if') {
+            const at = !!a.t
+            const bt = !!b.t
+            if (at === bt && (at ? isNull(a.a) === isNull(b.a)
+              : isNull(a.b) === isNull(b.b))) {
+              diff(bt ? a.a : a.b, bt ? b.a : b.b, dom, id, index, dom)
+            } else {
+              if (at) {
+                if (dom) parent.removeChild(dom)
+              } else {
+                const elm = renderNew(bt ? b.a : b.b)
+                if (dom) parent.insertBefore(elm, dom)
+                else parent.appendChild(elm)
+              }
+            }
+            return
+          }
           const aargs = a.args || {}
           const isSvg = type === 'svg'
           const [diffs, not] = difference(aargs, args) // 比较元素args

@@ -9,6 +9,10 @@ export default document => function render (node, parent) {
       case 'object':
         if (Array.isArray(node)) return node.forEach(node => parent.appendChild(render(node, parent)))
         let { type = 'div', children, args } = node
+        if (type === 'if') {
+          render(node.t ? node.a : node.b, parent)
+          return
+        }
         type = type.toLowerCase()
         const isSvg = type === 'svg'
         const elm = isSvg

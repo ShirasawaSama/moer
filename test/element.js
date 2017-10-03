@@ -5,7 +5,7 @@ import Element from '../src/Element'
 import connect from '../src/connect'
 import { ELEMENT_ID, STATE } from '../src/symbols'
 
-test('base', t => {
+test('base', async t => {
   const id = new Date().getTime()
   const children = ['test1', 'test2']
   const props = { className: 'test', id: 'test' }
@@ -34,12 +34,14 @@ test('base', t => {
     .includes('stateTest'), 'state.noConnect')
 
   Object.values(store[STATE])[0].text = 'updated'
-  t.true(dom
-    .window
-    .document
-    .getElementById('test')
-    .innerHTML
-    .includes('updated'), 'state.update')
+  await new Promise(resolve => setTimeout(() => resolve(
+    t.true(dom
+      .window
+      .document
+      .getElementById('test')
+      .innerHTML
+      .includes('updated'), 'state.update')
+  ), 10))
 
   const Test2 = connect(Test)
   dom = new JSDOM('<div id="root"></div>')

@@ -1,16 +1,17 @@
 {
   "name": "moer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "一个滑稽的MVVM框架",
   "main": "dist/index.js",
   "scripts": {
     "test": "ava test --verbose && npm run lint",
     "cov": "nyc ava test",
     "precommit": "npm test",
-    "fix": "eslint --fix --ext .js index.js rollup.config.js src",
-    "lint": "eslint --ext .js index.js rollup.config.js src",
+    "fix": "eslint --fix --ext .js index.js rollup.config.js test dev benchmarks src",
+    "lint": "eslint --ext .js index.js rollup.config.js test dev benchmarks src",
     "build": "rollup -c",
     "start": "rollup -c dev/rollup.config.js --watch",
+    "ben": "rollup -c benchmarks/big-table/rollup.config.js",
     "prepublish": "npm run test && npm run build"
   },
   "repository": {

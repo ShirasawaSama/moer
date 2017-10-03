@@ -47,13 +47,12 @@ export default (subscribers, store, models, elms, document) => {
               if (!elm) return
               if (a.children[i] && child) dom.replaceChild(elm, child)
               else dom.appendChild(elm)
-              a.children[i] = node
             })
-            if (!parent) {
-              clearElm(dom, children.reduce((p, v) => Array.isArray(v)
-                ? p - 1 + v.length : p, children.length))
-              a.children.splice(children.length)
-            }
+            const len = children.reduce((p, v) => Array.isArray(v)
+              ? p - 1 + v.length : p, children.length)
+            if (len) clearElm(dom, len)
+            else dom.textContent = ''
+            a.children = children
           }
         } else return renderNew(b) // 若元素类型改变, 则重新渲染元素
         break
@@ -77,7 +76,7 @@ export default (subscribers, store, models, elms, document) => {
           const child = parent.childNodes[pid]
           if (getType(node) === 2 && node.args && !isNull(node.args.key)) {
             if (node.args.key in pre) i = pre[node.args.key]
-            else if (a[i].args && a[i].args.key in post) {
+            else if (a[i] && a[i].args && a[i].args.key in post) {
               const elm = renderNew(node)
               if (child) parent.insertBefore(elm, child)
               else parent.appendChild(elm)
@@ -85,7 +84,7 @@ export default (subscribers, store, models, elms, document) => {
               return
             }
           }
-          const elm = diff(a[i], node, child, id + ',' + pid, index, parent)
+          const elm = diff(a[i], node, child, id + ',' + pid)
           if (!elm) return
           if (a[i] && child) parent.replaceChild(elm, child)
           else parent.appendChild(elm)

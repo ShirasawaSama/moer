@@ -2,6 +2,8 @@
 /dist
 *.dev.js
 *.dev.js.map
+/benchmarks/**/built.js
+/benchmarks/**/built.js.map
 
 # Logs
 logs

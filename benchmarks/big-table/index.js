@@ -48,9 +48,9 @@ class Index extends Element {
     console.profile('rerender')
     this.state.grid = grid
     setTimeout(() => {
-      this.store.msg = 'rerender took: ' + (window.performance.now() - s).toFixed(2) + 'ms'
+      this.store.msg = 'rerender took: ' + (window.performance.now() - s - 1).toFixed(2) + 'ms'
       console.profileEnd('rerender')
-    }, 0)
+    }, 1)
   }
   render (d) {
     return () => {

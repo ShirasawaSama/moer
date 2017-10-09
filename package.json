@@ -1,6 +1,6 @@
 {
   "name": "moer",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "一个滑稽的MVVM框架",
   "main": "dist/index.js",
   "scripts": {
@@ -14,6 +14,7 @@
     "ben": "rollup -c benchmarks/big-table/rollup.config.js",
     "prepublish": "npm run test && npm run build"
   },
+  "bugs": "https://coding.net/u/ncbql/p/moer/topic",
   "repository": {
     "type": "git",
     "url": "http://mengb.net/coding.php/moer"
@@ -35,7 +36,7 @@
     "ava": "^0.22.0",
     "babel-eslint": "^7.2.3",
     "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-moer": "^0.4.0",
+    "babel-preset-moer": "^0.5.0",
     "eslint": "^4.6.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",

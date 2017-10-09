@@ -375,6 +375,7 @@ interface DOMAttributes {
 }
 
 interface HTMLAttributes extends DOMAttributes {
+  key?: string | number
   // Standard HTML Attributes
   accept?: string
   acceptCharset?: string

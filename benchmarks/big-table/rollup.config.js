@@ -16,6 +16,17 @@ export default {
   plugins: [
     cjs(),
     nodeResolve({ main: true, jsnext: true }),
+    babel({
+      exclude: 'node_modules/**',
+      babelrc: false,
+      plugins: [
+        require('babel-plugin-external-helpers')
+      ],
+      presets: [
+        [require('babel-preset-moer'), { modules: false, debug: true }]
+      ]
+    })
+  ].concat(process.env.DEV ? [] : [
     uglify({
       compress: {
         warnings: false,
@@ -30,16 +41,5 @@ export default {
         comments: false,
         ascii_only: true
       }
-    }),
-    babel({
-      exclude: 'node_modules/**',
-      babelrc: false,
-      plugins: [
-        require('babel-plugin-external-helpers')
-      ],
-      presets: [
-        [require('babel-preset-moer'), { modules: false, debug: true }]
-      ]
-    })
-  ]
+    })])
 }

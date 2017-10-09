@@ -14,8 +14,8 @@ export default (subscribers, store, models, elms, document) => {
     switch (t) {
       case 1: return a !== b && document.createTextNode(b)
       case 2:
-        const { type, children, args } = b
-        if (a.type === type) { // 若元素类型没改变
+        const { t: type, c: children, a: args } = b
+        if (a.t === type) { // 若元素类型没改变
           if (type === 'if') {
             const at = !!a.t
             const bt = !!b.t
@@ -33,7 +33,7 @@ export default (subscribers, store, models, elms, document) => {
             }
             return
           }
-          const aargs = a.args || {}
+          const aargs = a.a || {}
           const isSvg = type === 'svg'
           const [diffs, not] = difference(aargs, args) // 比较元素args
           if (diffs.length) diffs.forEach(([k, v]) => setAccessor(dom, k, aargs[k], v, isSvg))
@@ -43,72 +43,84 @@ export default (subscribers, store, models, elms, document) => {
             children.forEach((node, i) => {
               index++
               const child = dom && dom.childNodes[i]
-              const elm = diff(a.children[i], node, child, id + ',' + i, index, dom)
+              const elm = diff(a.c[i], node, child, id + ',' + i, index, dom)
               if (!elm) return
-              if (a.children[i] && child) dom.replaceChild(elm, child)
+              if (a.c[i] && child) dom.replaceChild(elm, child)
               else dom.appendChild(elm)
             })
             const len = children.reduce((p, v) => Array.isArray(v)
               ? p - 1 + v.length : p, children.length)
             if (len) clearElm(dom, len)
             else dom.textContent = ''
-            a.children = children
+            a.c = children
           }
         } else return renderNew(b) // 若元素类型改变, 则重新渲染元素
         break
       case 3:
         index--
         if (!b.length) return
-        const post = b.reduce((p, v, i) => {
-          if (v && v.args && !isNull(v.args.key)) p[v.args.key] = i
-          return p
-        }, {})
-        const pre = a.filter((v, i) => {
-          if (v.args.key in post) return true
-          const child = parent.childNodes[i + index]
-          if (child) parent.removeChild(child)
-        }).reduce((p, v, i) => {
-          if (v && v.args && !isNull(v.args.key)) p[v.args.key] = i
-          return p
-        }, {})
-        b.forEach((node, i) => {
-          const pid = i + index
-          const child = parent.childNodes[pid]
-          if (getType(node) === 2 && node.args && !isNull(node.args.key)) {
-            if (node.args.key in pre) i = pre[node.args.key]
-            else if (a[i] && a[i].args && a[i].args.key in post) {
+        const pre = a.k || {}
+        let j = 0
+        const clear = {}
+        const post = {}
+        for (const v of b) {
+          if (v && v.a && typeof v.a.key !== 'undefined') post[v.a.key] = j
+          j++
+        }
+        j = 0
+        if (a.k) {
+          for (const key in pre) {
+            if (!(key in post)) clear[j] = null
+            j++
+          }
+        }
+        j = 0
+        let len = parent.childNodes.length
+        for (let k = 0; k < Math.max(a.length, b.length); k++) {
+          const pid = k + index - j
+          const child = len > pid ? parent.childNodes[pid] : null
+          if (k in clear && child) {
+            j++
+            parent.removeChild(child)
+          }
+          const node = b[k]
+          let i = k
+          if (getType(node) === 2 && node.a && typeof node.a.key !== 'undefined') {
+            if (node.a.key in pre) i = pre[node.a.key]
+            else if (a[i] && a[i].a && a[i].a.key in post) {
               const elm = renderNew(node)
               if (child) parent.insertBefore(elm, child)
               else parent.appendChild(elm)
-              a[i] = node
-              return
+              continue
             }
           }
           const elm = diff(a[i], node, child, id + ',' + pid)
-          if (!elm) return
+          if (!elm) continue
           if (a[i] && child) parent.replaceChild(elm, child)
           else parent.appendChild(elm)
-          a[i] = node
-        })
+        }
+        b.k = post
         index += b.length
     }
   }
   return diff
 }
+
 function isNull (obj) {
   return obj === null || typeof obj === 'undefined'
 }
 function clearElm (elm, start) {
   const children = elm.childNodes
+  let len = children.length
   for (let i = children.length - start; i > 0; i--) {
-    elm.removeChild(children[children.length - 1])
+    elm.removeChild(children[--len])
   }
 }
 
 function difference (a = {}, b = {}) {
   return [
-    Object.entries(b).filter(n => !equal(n[1], a[n[0]])),
-    Object.entries(a).filter(c => !(c[0] in b))
+    Object.entries(b).filter(n => n[0] !== 'key' && !equal(n[1], a[n[0]])),
+    Object.entries(a).filter(c => c[0] !== 'key' && !(c[0] in b))
   ]
 }
 function getType (obj) {

@@ -14,7 +14,7 @@ export default document => function render (node, parent) {
             const dom = render(elm, parent)
             if (dom) {
               parent.appendChild(dom)
-              if (elm.a && typeof elm.a.key !== 'undefined') keys[elm.a.key] = i
+              if (elm.a) keys[elm.a.key] = i
             }
             i++
           }

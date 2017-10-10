@@ -7,7 +7,7 @@ import getElementRender from './render/renderElement'
 export default (subscribers, store, models, elms, document) => {
   const renderNew = getRender(document)
   const renderElm = getElementRender(subscribers, store, models, elms)
-  function diff (a, b, dom, id = 0, index, parent) {
+  return function diff (a, b, dom, id = 0, index, parent) {
     if (b instanceof Element) b = renderElm(b, id)
     const t = getType(b)
     if (t !== 3 && getType(a) !== t) return renderNew(b) // 类型不同直接重新渲染
@@ -64,7 +64,7 @@ export default (subscribers, store, models, elms, document) => {
         const clear = {}
         const post = {}
         for (const v of b) {
-          if (v && v.a && typeof v.a.key !== 'undefined') post[v.a.key] = j
+          if (v && v.a) post[v.a.key] = j
           j++
         }
         j = 0
@@ -75,17 +75,19 @@ export default (subscribers, store, models, elms, document) => {
           }
         }
         j = 0
-        let len = parent.childNodes.length
-        for (let k = 0; k < Math.max(a.length, b.length); k++) {
+        const cn = parent.childNodes
+        const times = Math.max(a.length, b.length)
+        let len = cn.length
+        for (let k = 0; k < times; k++) {
           const pid = k + index - j
-          const child = len > pid ? parent.childNodes[pid] : null
+          const child = len > pid ? cn[pid] : null
           if (k in clear && child) {
             j++
             parent.removeChild(child)
           }
           const node = b[k]
           let i = k
-          if (getType(node) === 2 && node.a && typeof node.a.key !== 'undefined') {
+          if (getType(node) === 2 && node.a) {
             if (node.a.key in pre) i = pre[node.a.key]
             else if (a[i] && a[i].a && a[i].a.key in post) {
               const elm = renderNew(node)
@@ -103,7 +105,6 @@ export default (subscribers, store, models, elms, document) => {
         index += b.length
     }
   }
-  return diff
 }
 
 function isNull (obj) {

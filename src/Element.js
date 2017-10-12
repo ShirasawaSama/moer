@@ -5,7 +5,7 @@ export default class Element {
   render () { return null }
   set (store, models) {
     const id = this[ELEMENT_ID]
-    if (typeof this.state === 'object') {
+    if (this.state) {
       if (!store[STATE][id]) store[STATE][id] = this.state
       this.state = store[STATE][id]
     }

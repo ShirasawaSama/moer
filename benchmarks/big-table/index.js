@@ -1,3 +1,4 @@
+import 'moer'
 import moer, { Element, connect } from '../../index'
 
 const valuePoints = [

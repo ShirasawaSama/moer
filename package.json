@@ -1,12 +1,12 @@
 {
   "name": "moer",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "一个滑稽的MVVM框架",
   "main": "dist/index.js",
   "scripts": {
     "test": "ava test --verbose && npm run lint",
     "cov": "nyc ava test",
-    "precommit": "npm test",
+    "precommit": "npm run lint",
     "fix": "eslint --fix --ext .js index.js rollup.config.js test dev benchmarks src",
     "lint": "eslint --ext .js index.js rollup.config.js test dev benchmarks src",
     "build": "rollup -c",
@@ -36,7 +36,7 @@
     "ava": "^0.22.0",
     "babel-eslint": "^7.2.3",
     "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-moer": "^0.5.0",
+    "babel-preset-moer": "^0.6.0",
     "eslint": "^4.6.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",
@@ -52,7 +52,5 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-uglify": "^2.0.1"
   },
-  "dependencies": {
-    "lodash": "^4.17.4"
-  }
+  "dependencies": {}
 }

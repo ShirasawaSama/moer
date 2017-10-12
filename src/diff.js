@@ -1,4 +1,3 @@
-import equal from 'lodash/isequal'
 import Element from './Element'
 import getRender from './render/render'
 import setAccessor from './render/setAccessor'
@@ -14,13 +13,13 @@ export default (subscribers, store, models, elms, document) => {
     switch (t) {
       case 1: return a !== b && document.createTextNode(b)
       case 2:
-        const { t: type, c: children, a: args } = b
+        const { t: type, c: children, a: attr } = b
         if (a.t === type) { // 若元素类型没改变
           if (type === 'if') {
             const at = !!a.t
             const bt = !!b.t
-            if (at === bt && (at ? isNull(a.a) === isNull(b.a)
-              : isNull(a.b) === isNull(b.b))) {
+            if (at === bt && (at ? (a.a == null) === (b.a == null)
+              : (a.b == null) === (b.b == null))) {
               diff(bt ? a.a : a.b, bt ? b.a : b.b, dom, id, index, dom)
             } else {
               if (at) {
@@ -33,11 +32,7 @@ export default (subscribers, store, models, elms, document) => {
             }
             return
           }
-          const aargs = a.a || {}
-          const isSvg = type === 'svg'
-          const [diffs, not] = difference(aargs, args) // 比较元素args
-          if (diffs.length) diffs.forEach(([k, v]) => setAccessor(dom, k, aargs[k], v, isSvg))
-          if (not.length) not.forEach(([k, v]) => setAccessor(dom, k, v, null, isSvg))
+          if (a.a || attr) setAccessor(dom, a.a, attr, type === 'svg') // 比较元素attr
           if (Array.isArray(children)) {
             let index = 0
             children.forEach((node, i) => {
@@ -106,23 +101,13 @@ export default (subscribers, store, models, elms, document) => {
     }
   }
 }
-
-function isNull (obj) {
-  return obj === null || typeof obj === 'undefined'
-}
 function clearElm (elm, start) {
   const children = elm.childNodes
   let len = children.length
-  for (let i = children.length - start; i > 0; i--) {
+  const times = len - start
+  for (let i = times; i > 0; i--) {
     elm.removeChild(children[--len])
   }
-}
-
-function difference (a = {}, b = {}) {
-  return [
-    Object.entries(b).filter(n => n[0] !== 'key' && !equal(n[1], a[n[0]])),
-    Object.entries(a).filter(c => c[0] !== 'key' && !(c[0] in b))
-  ]
 }
 function getType (obj) {
   const t = typeof obj

@@ -1,4 +1,3 @@
-import union from 'lodash/union'
 import Element from '../Element'
 import { CONNECTED, ELEMENT_ID } from '../symbols'
 
@@ -25,12 +24,22 @@ export default (subscribers, data, models, elms, postRenders) => function render
   node = result
   if (symbol) {
     const array = subscribers.listener[symbol]
-    const unless = array.reduce((prev, key) => (++prev[key] || (prev[key] = 1)) && prev, {})
-    const actions = union(array.filter((key, i) => unless[key] > 1 || !array[++i] ||
-      !array[i].startsWith(key)))
-    subscribers.listener[symbol] = actions
-    actions.forEach(action => subscribers.actions[action]
-      ? subscribers.actions[action].push(symbol) : (subscribers.actions[action] = [symbol]))
+    const unless = {}
+    const actions = new Set()
+    const len = array.length
+    if (len) actions.add(array[len - 1])
+    for (let i = 0; i < len - 1; i++) {
+      const key = array[i]
+      if (key in unless || !array[i + 1].startsWith(key)) actions.add(key)
+      else unless[key] = null
+    }
+    const result = new Array(actions.size)
+    actions.forEach((v, i) => {
+      result[i] = v
+      if (subscribers.actions[v]) subscribers.actions[v].push(symbol)
+      else subscribers.actions[v] = [symbol]
+    })
+    subscribers.listener[symbol] = result
     elms[symbol] = id
   }
   if (node instanceof Element) return renderElement(node, id)

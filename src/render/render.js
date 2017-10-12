@@ -20,14 +20,14 @@ export default document => function render (node, parent) {
           }
           node.k = keys
         }
-        let { t: type = 'div', c: children, a: args } = node
+        let { t: type = 'div', c: children, a: attr } = node
         if (type === 'if') return render(node.e ? node.a : node.b, parent)
         type = type.toLowerCase()
         const isSvg = type === 'svg'
         const elm = isSvg
           ? document.createElementNS('http://www.w3.org/2000/svg', 'svg')
           : document.createElement(type)
-        if (args) for (const key in args) if (key !== 'key') setAccessor(elm, key, null, args[key], isSvg)
+        if (attr) setAccessor(elm, {}, attr, isSvg)
         if (Array.isArray(children)) children.forEach(node => (node = render(node, elm)) && elm.appendChild(node))
         return elm
     }

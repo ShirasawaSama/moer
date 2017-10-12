@@ -5,7 +5,7 @@ const CAP = /Capture$/
 const NON_DIM = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 const n = 'http://www.w3.org/1999/xlink'
 
-export default (node, a = {}, b = {}, isSvg) => {
+export default (node, b = {}, a = {}, isSvg) => {
   for (let name in a) {
     if (!(name in b) && name !== 'key') {
       if (isSvg && (name !== (name = name.replace(XLINK, '')))) {
@@ -22,10 +22,17 @@ export default (node, a = {}, b = {}, isSvg) => {
         const to = typeof old
         if (!value || type === 'string' || to === 'string') node.style.cssText = value || ''
         if (type === 'object') {
-          if (to === 'object') for (const i in old) if (!(i in value)) node.style[i] = ''
-          for (const i in value) {
-            const v = value[i]
-            if (v !== old[i]) {
+          if (to === 'object') {
+            for (const i in old) if (!(i in value)) node.style[i] = ''
+            for (const i in value) {
+              const v = value[i]
+              if (v !== old[i]) {
+                node.style[i] = typeof v === 'number' && !NON_DIM.test(i) ? v + 'px' : v
+              }
+            }
+          } else {
+            for (const i in value) {
+              const v = value[i]
               node.style[i] = typeof v === 'number' && !NON_DIM.test(i) ? v + 'px' : v
             }
           }

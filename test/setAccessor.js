@@ -1,3 +1,4 @@
+import 'moer'
 import test from 'ava'
 import start from '../src/start'
 import connect from '../src/connect'
@@ -7,26 +8,16 @@ import { JSDOM } from 'jsdom'
 
 const d = new JSDOM('<div></div>').window.document
 
-test('className', t => {
-  const e = d.createElement('div')
-
-  sa(e, 'className', null, 'red')
-  t.is(e.getAttribute('class'), 'red', 'String')
-
-  sa(e, 'className', 'red', ['green', false && 'block', 'btn'])
-  t.is(e.getAttribute('class'), 'green btn', 'Array')
-})
-
 test('style', t => {
   let e = d.createElement('div')
 
-  sa(e, 'style', null, 'color: red')
+  sa(e, { style: 'color: red' })
   t.is(e.style.color, 'red', 'String')
 
   e = d.createElement('div')
-  sa(e, 'style', null, { fontSize: 20 })
+  sa(e, { style: { fontSize: 20 } })
   t.is(e.style.fontSize, '20px', 'IntAddPx')
-  sa(e, 'style', { fontSize: 20 }, {})
+  sa(e, {}, { style: { fontSize: 20 } })
   t.false(!!e.style.fontSize, 'Delete')
 })
 
@@ -61,6 +52,11 @@ test('event', async t => {
 })
 
 test('other', t => {
+  const e = d.createElement('div')
+
+  sa(e, { className: 'red' })
+  t.is(e.getAttribute('class'), 'red', 'ClassName')
+
   @connect
   class Test extends Element {
     render (d) {

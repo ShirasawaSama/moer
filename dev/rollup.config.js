@@ -9,7 +9,7 @@ export default {
     format: 'iife',
     file: 'dev/index.dev.js',
     name: 'moer',
-    sourceMap: true
+    sourcemap: true
   },
   plugins: [
     cjs(),

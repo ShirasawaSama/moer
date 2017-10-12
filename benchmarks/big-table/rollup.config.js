@@ -11,7 +11,7 @@ export default {
     format: 'iife',
     file: join(__dirname, 'built.js'),
     name: 'moer',
-    sourceMap: true
+    sourcemap: true
   },
   plugins: [
     cjs(),

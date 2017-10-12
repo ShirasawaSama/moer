@@ -19,7 +19,10 @@ export default (document, node, dom, data, models) => {
   const renderElm = getElementRender(subscribers, data, models, elms, postRenders)
   const result = gen(node)
   subscribers.current = null
-  if (result) dom.appendChild(render(document)(result, dom))
+  if (result) {
+    const child = render(document)(result, dom)
+    if (child) dom.appendChild(child)
+  }
   postRenders.forEach(fn => fn())
   postRenders = null
   const diff = getDiff(subscribers, data, models, elms, document)

@@ -10,7 +10,7 @@ export default {
     format: 'cjs',
     file: 'dist/index.js',
     name: 'moer',
-    sourceMap: true
+    sourcemap: true
   },
   plugins: [
     cjs(),

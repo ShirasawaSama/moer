@@ -9,7 +9,7 @@
     "precommit": "npm run lint",
     "fix": "eslint --fix --ext .js index.js rollup.config.js test dev benchmarks src",
     "lint": "eslint --ext .js index.js rollup.config.js test dev benchmarks src",
-    "build": "rollup -c",
+    "build": "rollup -c && gzip-size dist/index.js",
     "start": "rollup -c dev/rollup.config.js --watch",
     "ben": "rollup -c benchmarks/big-table/rollup.config.js",
     "prepublish": "npm run test && npm run build"
@@ -21,7 +21,9 @@
   },
   "ava": {
     "babel": "inherit",
-    "require": ["babel-register"]
+    "require": [
+      "babel-register"
+    ]
   },
   "files": [
     "index.js",
@@ -43,6 +45,7 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
+    "gzip-size-cli": "^2.1.0",
     "husky": "^0.14.3",
     "jsdom": "^11.2.0",
     "nyc": "^11.2.1",

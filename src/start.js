@@ -6,6 +6,7 @@ export default ({
   document = window.document,
   root = document.getElementById('root'),
   data = {},
+  plugins = [],
   models
 }) => {
   if (typeof data !== 'object' ||
@@ -22,6 +23,8 @@ export default ({
       })
   }
   if (!node[ELEMENT_ID]) node.init((new Date().getTime() + Math.random()) * 100000)
+  const setup = {}
+  plugins.forEach(p => p && typeof p.onSetup === 'function' && p.onSetup(setup))
   return render(
     document,
     node,
@@ -30,7 +33,7 @@ export default ({
     Array.isArray(models)
       ? models
         .filter(model => typeof model === 'function')
-        .map(Model => new Model())
+        .map(Model => new Model(setup))
         .filter(model => model.name)
       : []
   )

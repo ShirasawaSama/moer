@@ -1,14 +1,16 @@
 # Moer.js  [![tnpm](http://npm.taobao.org/badge/v/moer.svg?style=flat-square)](http://npm.taobao.org/package/moer) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-一个全新的MVVM框架, 可能是所有框架中语法最蛋疼的框架
+一个全新的 **MVVM** 框架
 
 ## 特性
 
 - 虚拟DOM
-- 双向绑定
-- Model层支持
-- Typescript支持
-- 支持异步获取数据
+- 高性能渲染组件
+- Model层分离
+- TypeScript支持
+- 插件API
+- 异步请求数据
+- 体积小 (MIN+GZIP后仅 4.97KB)
 - 服务端渲染 (大雾)
 
 ## 语法

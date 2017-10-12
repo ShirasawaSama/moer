@@ -7,7 +7,7 @@ const n = 'http://www.w3.org/1999/xlink'
 
 export default (node, b = {}, a = {}, isSvg) => {
   for (let name in a) {
-    if (!(name in b) && name !== 'key') {
+    if (!(name in b) && name !== 'key' && name !== 'once') {
       if (isSvg && (name !== (name = name.replace(XLINK, '')))) {
         node.removeAttributeNS(n, name.toLowerCase())
       } else node.removeAttribute(name)
@@ -16,7 +16,7 @@ export default (node, b = {}, a = {}, isSvg) => {
   for (let name in b) {
     const old = a[name]
     const value = b[name]
-    if (old !== value && name !== 'key') {
+    if (old !== value && name !== 'key' && name !== 'once') {
       if (name === 'style') {
         const type = typeof value
         const to = typeof old

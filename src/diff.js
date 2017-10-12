@@ -32,8 +32,9 @@ export default (subscribers, store, models, elms, document) => {
             }
             return
           }
+          if (a.a && a.a.once) return
           if (a.a || attr) setAccessor(dom, attr, a.a, type === 'svg') // 比较元素attr
-          if (Array.isArray(children)) {
+          if (Array.isArray(children) && (!attr || !('innerHTML' in attr))) {
             let index = 0
             children.forEach((node, i) => {
               index++

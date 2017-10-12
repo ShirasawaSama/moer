@@ -23,7 +23,7 @@ class Index extends Element {
     filter: ''
   }
   matches (item) {
-    return item.value.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1
+    return item.value.includes(this.state.filter)
   }
   visibleCount () {
     let count = 0

@@ -28,7 +28,9 @@ export default document => function render (node, parent) {
           ? document.createElementNS('http://www.w3.org/2000/svg', 'svg')
           : document.createElement(type)
         if (attr) setAccessor(elm, attr, {}, isSvg)
-        if (Array.isArray(children)) children.forEach(node => (node = render(node, elm)) && elm.appendChild(node))
+        if (Array.isArray(children) && (!attr || !('innerHTML' in attr))) {
+          children.forEach(node => (node = render(node, elm)) && elm.appendChild(node))
+        }
         return elm
     }
   }

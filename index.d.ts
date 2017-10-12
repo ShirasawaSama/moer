@@ -10,6 +10,7 @@ export default function moer ({}: {
   root?: any,
   data?: any,
   models?: any,
+  plugins?: any,
   document?: object
 }): any
 export var connect: (Class: Function) => any
@@ -376,6 +377,7 @@ interface DOMAttributes {
 
 interface HTMLAttributes extends DOMAttributes {
   key?: string | number
+  once?: boolean
   // Standard HTML Attributes
   accept?: string
   acceptCharset?: string
@@ -394,7 +396,6 @@ interface HTMLAttributes extends DOMAttributes {
   charSet?: string
   challenge?: string
   checked?: boolean
-  class?: string | { [key: string]: boolean } | string[]
   className?: string | { [key: string]: boolean } | string[]
   cols?: number
   colSpan?: number

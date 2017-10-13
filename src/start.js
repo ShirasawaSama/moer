@@ -9,7 +9,7 @@ export default ({
   plugins = [],
   models
 }) => {
-  if (typeof data !== 'object' ||
+  if (!data || typeof data !== 'object' ||
     Array.isArray(data)) throw new TypeError('Data must be a Object ant not be an Array!')
   if (typeof root === 'string') root = document.querySelector(root)
   if (!root || typeof root.appendChild !== 'function') throw new TypeError('Root must be a html element!')

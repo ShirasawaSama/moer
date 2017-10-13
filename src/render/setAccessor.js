@@ -48,7 +48,9 @@ export default (node, b = {}, a = {}, isSvg) => {
       } else if (name === 'innerHTML') node.innerHTML = value || ''
       else if (!isSvg && name !== 'list' && name !== 'type' && name in node) {
         node[name] = value == null ? '' : value
-        if (value == null || value === false) node.removeAttribute(name)
+        if (value == null || value === false) {
+          node.removeAttribute(name === 'className' ? 'class' : name)
+        }
       } else {
         const ns = isSvg && (name !== (name = name.replace(XLINK, '')))
         if (value == null || value === false) {

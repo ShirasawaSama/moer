@@ -39,9 +39,9 @@ class Index extends Element {
     const s = window.performance.now()
     this.state.grid = []
     setTimeout(() => {
-      this.store.msg = 'umount took: ' + (window.performance.now() - s).toFixed(2) + 'ms'
+      this.store.msg = 'umount took: ' + (window.performance.now() - s - 10).toFixed(2) + 'ms'
       console.profileEnd('unmount')
-    }, 0)
+    }, 10)
   }
   rerender = () => {
     const grid = generateGrid(1000, 10)
@@ -49,9 +49,9 @@ class Index extends Element {
     console.profile('rerender')
     this.state.grid = grid
     setTimeout(() => {
-      this.store.msg = 'rerender took: ' + (window.performance.now() - s - 1).toFixed(2) + 'ms'
+      this.store.msg = 'rerender took: ' + (window.performance.now() - s - 10).toFixed(2) + 'ms'
       console.profileEnd('rerender')
-    }, 1)
+    }, 10)
   }
   render (d) {
     return () => {
@@ -97,7 +97,7 @@ console.profile('a')
 const store = moer({ node: new Index(), data: { msg: 'loading...' } })
 
 console.profileEnd('a')
-setTimeout(() => (store.msg = 'initial render took: ' + (window.performance.now() - s).toFixed(2) + 'ms'), 0)
+setTimeout(() => (store.msg = 'initial render took: ' + (window.performance.now() - s - 10).toFixed(2) + 'ms'), 10)
 
 function generateGrid (rowCount, columnCount) {
   let valueIndex = 0

@@ -19,6 +19,7 @@ export default document => function render (node, parent) {
             i++
           }
           node.k = keys
+          return
         }
         let { t: type = 'div', c: children, a: attr } = node
         if (type === 'if') return render(node.e ? node.a : node.b, parent)

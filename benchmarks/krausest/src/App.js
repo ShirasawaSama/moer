@@ -26,7 +26,7 @@ export default class App extends Element {
   handleClick = e => {
     const { action, id } = e.target.dataset
     if (action && id) {
-      this[action](id)
+      this[action](Number(id))
     }
   }
   add = () => {
@@ -102,7 +102,7 @@ export default class App extends Element {
             }
           }
         }
-        d.table({ className: 'table table-hover table-striped test-data' }); {
+        d.table({ className: 'table table-hover table-striped test-data', onClick: this.handleClick }); {
           d.tbody(); {
             for (const item of rows) {
               d.tr({ key: item.id, className: item.id === selected ? 'danger' : void 0 }); {

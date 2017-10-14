@@ -72,12 +72,7 @@ export default (subscribers, store, models, elms, document) => {
                 const child = cn[pid]
                 const elm = diff(a[i], node, child, id + ',' + pid)
                 if (elm) parent.replaceChild(elm, child)
-              } else { // 元素位置改变
-                const j = pre[key]
-                const o = cn[index + j]
-                let child = o.cloneNode(true)
-                move[j] = { o, n: diff(a[j], node, child, id + ',' + pid) || child }
-              }
+              } else move[i] = { p: i, c: cn[index + pre[key]] } // 元素位置改变
             }
           }
         }
@@ -92,29 +87,31 @@ export default (subscribers, store, models, elms, document) => {
         clen = clen - index
         const times = Math.max(alen, blen)
         for (let i = 0; i < times; i++) { // 元素的 '增', '删', '移' 操作
-          let ij = i + j
-          let pid = index + ij
-          let child = clen + ij < 0 ? null : cn[pid]
+          let pid = index + i + j
+          let child = clen + j < 0 ? null : cn[pid]
           let old = a[i]
           if (child && old && old.a &&
             !(old.a.key in post)) { // 如果旧元素不在新元素树中, '删'
             parent.removeChild(child)
-            ij = i + j
-            pid = index + ij
-            child = clen + ij < 0 ? null : cn[pid]
-            old = null
             j--
+            old = false
+            child = clen + j < 0 ? null : cn[pid]
           }
           if (i in move) { // 如果元素位置移动, '移'
-            const { o, n } = move[i]
-            parent.insertBefore(n, child)
-            parent.removeChild(o)
+            const { c, p } = move[i]
+            if (p !== pid + (old !== false)) {
+              let elm = c.cloneNode(true)
+              parent.insertBefore(diff(a[i], b[i], elm, id + ',' + pid) || elm, child)
+              parent.removeChild(c)
+            }
             continue
           }
-          const elm = diff(old, b[i], child, id + ',' + pid)
-          if (elm) { // 如果数据被插入, '增'
-            parent.insertBefore(elm, child)
-            j++
+          if (old !== false) {
+            const elm = diff(old, b[i], child, id + ',' + pid)
+            if (elm) { // 如果数据被插入, '增'
+              parent.insertBefore(elm, child)
+              j++
+            }
           }
         }
         b.k = post

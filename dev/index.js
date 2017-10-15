@@ -1,18 +1,27 @@
 /* eslint-disable no-constant-condition */
-
+import 'moer'
 import moer, { Element, connect } from '../index'
 
 @connect
 class Index extends Element {
   render (d) {
-    return () => {
-      d.div(); {
-        for (const i of this.store.a) {
-          d.p({ key: i }); `${i} `
-        }
-      }
+    return {
+      a: { id: 'test' },
+      c: [
+        this.store.a ? { t: 'p', c: ['true'] } : { t: 'h1', c: ['false'] },
+        this.store.a ? { c: ['test'] } : null
+      ]
     }
   }
 }
 
-moer({ node: new Index(), data: { a: ['a', 'b', 'c'] } }).a.splice(1, 1)
+const store = moer({ node: new Index(), data: { a: true } })
+const s = () => new Promise(resolve => setTimeout(resolve, 10))
+async function u () {
+  store.a = false
+  await s()
+
+  store.a = true
+  await s()
+}
+u()

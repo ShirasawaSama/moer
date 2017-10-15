@@ -14,7 +14,10 @@ export default document => function render (node, parent) {
             const dom = render(elm, parent)
             if (dom) {
               parent.appendChild(dom)
-              if (elm.a) keys[elm.a.key] = i
+              if (elm.a) {
+                const key = elm.a.key
+                if (key in keys) throw new Error('组件Key相同: ' + key); else keys[key] = i
+              }
             }
             i++
           }

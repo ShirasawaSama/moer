@@ -6,55 +6,75 @@ import getElementRender from './render/renderElement'
 export default (subscribers, store, models, elms, document) => {
   const renderNew = getRender(document)
   const renderElm = getElementRender(subscribers, store, models, elms)
-  return function diff (a, b, dom, id = 0, index, parent) {
+  return function diff (a, b, dom, id = 0, index = { i: 0 }, parent) {
     if (b instanceof Element) b = renderElm(b, id)
     const t = getType(b)
-    if (t !== 3 && getType(a) !== t) return renderNew(b) // 类型不同直接重新渲染
+    if (t !== 3 && getType(a) !== t) { // 类型不同直接重新渲染
+      const d = renderNew(b)
+      if (d) index.i++
+      return { b, d }
+    }
     switch (t) {
-      case 1: return a !== b && document.createTextNode(b)
+      case 1:
+        const bn = b != null
+        if (bn) index.i++
+        return { b, d: bn && a !== b && document.createTextNode(b) }
       case 2:
         const { t: type, c: children, a: attr } = b
         if (a.t === type) { // 若元素类型没改变
           if (type === 'if') {
-            const at = !!a.t
-            const bt = !!b.t
-            if (at === bt && (at ? (a.a == null) === (b.a == null)
-              : (a.b == null) === (b.b == null))) {
-              diff(bt ? a.a : a.b, bt ? b.a : b.b, dom, id, index, dom)
-            } else {
-              if (at) {
-                if (dom) parent.removeChild(dom)
-              } else parent.insertBefore(renderNew(bt ? b.a : b.b), dom)
+            const at = !!a.e
+            const bt = !!b.e
+            const pre = at ? a.a : a.b
+            const post = bt ? b.a : b.b
+            const pn = post == null
+            const rn = pre == null
+            if (at === bt && dom && pn === rn) { // 若前后表达式没变则直接diff
+              const elm = diff(pre, post, dom, id, index, dom)
+              if (elm.d) parent.replaceChild(elm.d, dom) // 如果发现更新则直接替换
+            } else { // 如果改变了
+              if (pn) { // 如果后者不存在
+                if (!rn && dom) parent.removeChild(dom) // 如果前者已被渲染则直接删除
+              } else { // 如果后者存在
+                const elm = renderNew(post)
+                if (elm) {
+                  index.i++
+                  if (rn || !dom) parent.insertBefore(elm, dom) // 如果前者不存在则直接插入
+                  else parent.replaceChild(elm, dom) // 如果前者存在则直接替换
+                }
+              }
             }
-            return
+            return { b }
           }
-          if (a.a && a.a.once) return
+          index.i++
+          if (a.a && a.a.once) return { b: a }
           if (a.a || attr) setAccessor(dom, attr, a.a, type === 'svg') // 比较元素attr
           if (Array.isArray(children) && (!attr || !('innerHTML' in attr))) {
-            let index = 0
+            const index = { i: 0 }
             const lclen = a.c ? a.c.length : 0
             children.forEach((node, i) => {
-              index++
               const achild = lclen > i && a.c[i]
-              const child = dom && dom.childNodes[i]
+              const child = dom && dom.childNodes[index.i]
               const elm = diff(achild, node, child, id + ',' + i, index, dom)
-              if (elm) {
-                if (achild && child) dom.replaceChild(elm, child)
-                else dom.appendChild(elm)
+              a.c[i] = elm.b
+              if (elm.d) {
+                if (achild && child) dom.replaceChild(elm.d, child)
+                else dom.appendChild(elm.d)
               }
             })
-            const len = children.reduce((p, v) => Array.isArray(v)
-              ? p - 1 + v.length : p, children.length)
-            if (len) clearElm(dom, len)
+            if (index.i > 0) clearElm(dom, index.i)
             else dom.textContent = ''
-            a.c = children
           }
-        } else return renderNew(b) // 若元素类型改变, 则重新渲染元素
-        break
+          return { b }
+        } else { // 若元素类型改变, 则重新渲染元素
+          const d = renderNew(b)
+          if (d) index.i++
+          return { b, d }
+        }
       case 3:
-        index--
         const blen = b.length
-        if (!blen) return
+        if (!blen) return { b: [] }
+        const ai = index.i
         const move = {}
         const post = {}
         const pre = a.k || {}
@@ -67,55 +87,61 @@ export default (subscribers, store, models, elms, document) => {
             post[key] = i
             if (key in pre) { // 元素已存在
               notEqual = true
-              const pid = index + i
-              if (i === pre[key]) { // 元素位置没变化
+              const pid = index.i + i
+              const k = pre[key]
+              if (i === k) { // 元素位置没变化
                 const child = cn[pid]
                 const elm = diff(a[i], node, child, id + ',' + pid)
-                if (elm) parent.replaceChild(elm, child)
-              } else move[i] = { p: i, c: cn[index + pre[key]] } // 元素位置改变
+                if (elm.d) parent.replaceChild(elm.d, child)
+              } else { // 元素位置改变
+                const p = ai + k
+                move[i] = { p, k, c: cn[p] }
+              }
             }
           }
         }
         let clen = cn.length
-        const alen = a.length
+        const alen = a.filter(v => v != null).length
         if (!notEqual && alen === clen) {
           parent.textContent = ''
           renderNew(b, parent)
-          return
+          index.i = parent.childElementCount
+          return { b: [] }
         }
         let j = 0
-        clen = clen - index
+        clen = clen - index.i
         const times = Math.max(alen, blen)
         for (let i = 0; i < times; i++) { // 元素的 '增', '删', '移' 操作
-          let pid = index + i + j
-          let child = clen + j < 0 ? null : cn[pid]
+          let child = clen + j < 0 ? null : cn[index.i]
           let old = a[i]
           if (child && old && old.a &&
             !(old.a.key in post)) { // 如果旧元素不在新元素树中, '删'
             parent.removeChild(child)
             j--
-            old = false
-            child = clen + j < 0 ? null : cn[pid]
+            old = null
+            child = clen + j < 0 ? null : cn[index.i]
           }
           if (i in move) { // 如果元素位置移动, '移'
-            const { c, p } = move[i]
-            if (p !== pid + (old !== false)) {
-              let elm = c.cloneNode(true)
-              parent.insertBefore(diff(a[i], b[i], elm, id + ',' + pid) || elm, child)
+            const { c, k, p } = move[i]
+            if (p === index.i + (old != null) + 1) index.i++
+            else {
+              const node = c.cloneNode(true)
+              const elm = diff(a[k], b[i], node, id + ',' + index.i, index, parent)
+              parent.insertBefore(elm.d || node, child)
               parent.removeChild(c)
+              b[i] = elm.b
             }
             continue
           }
-          if (old !== false) {
-            const elm = diff(old, b[i], child, id + ',' + pid)
-            if (elm) { // 如果数据被插入, '增'
-              parent.insertBefore(elm, child)
-              j++
-            }
+          const elm = diff(old, b[i], child, id + ',' + index.i, index, parent)
+          b[i] = elm.b
+          if (elm.d) { // 如果数据被插入, '增'
+            parent.insertBefore(elm.d, child)
+            j++
           }
         }
         b.k = post
-        index += blen
+        return { b }
     }
   }
 }

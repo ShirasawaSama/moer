@@ -21,7 +21,7 @@ export default {
         require('babel-plugin-external-helpers')
       ],
       presets: [
-        [require('babel-preset-moer'), { modules: false, debug: true }]
+        [require('babel-preset-moer'), { modules: false, debug: true, targets: { chrome: 61 } }]
       ]
     })
   ]

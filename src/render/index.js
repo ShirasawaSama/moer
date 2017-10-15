@@ -52,9 +52,7 @@ export default (document, node, dom, data, models) => {
       if (!node) return
       node[ELEMENT] = value
     }
-    if (Array.isArray(node.c)) {
-      node.c = node.c.map((node, i) => gen(node, id + ',' + i))
-    }
+    if (Array.isArray(node.c)) node.c = node.c.map((node, i) => gen(node, id + ',' + i))
     return node
   }
 }

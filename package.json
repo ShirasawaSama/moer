@@ -13,7 +13,7 @@
     "start": "rollup -c dev/rollup.config.js --watch",
     "ben:bt": "rollup -c benchmarks/big-table/rollup.config.js",
     "ben:kr": "rollup -c benchmarks/krausest/rollup.config.js",
-    "prepublish": "npm run test && npm run build",
+    "pub": "npm run test && npm run build && npm publish",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "bugs": "https://coding.net/u/ncbql/p/moer/topic",
@@ -25,6 +25,15 @@
     "babel": "inherit",
     "require": [
       "babel-register"
+    ]
+  },
+  "nyc": {
+    "exclude": [
+      "node_modules",
+      "benchmarks",
+      "dist",
+      "dev",
+      "test"
     ]
   },
   "files": [

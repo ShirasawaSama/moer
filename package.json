@@ -13,7 +13,8 @@
     "start": "rollup -c dev/rollup.config.js --watch",
     "ben:bt": "rollup -c benchmarks/big-table/rollup.config.js",
     "ben:kr": "rollup -c benchmarks/krausest/rollup.config.js",
-    "prepublish": "npm run test && npm run build"
+    "prepublish": "npm run test && npm run build",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "bugs": "https://coding.net/u/ncbql/p/moer/topic",
   "repository": {
@@ -40,6 +41,7 @@
     "babel-eslint": "^7.2.3",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-moer": "^0.6.0",
+    "codecov": "^2.3.1",
     "eslint": "^4.6.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",

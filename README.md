@@ -1,4 +1,4 @@
-# Moer.js  [![tnpm](http://npm.taobao.org/badge/v/moer.svg?style=flat-square)](http://npm.taobao.org/package/moer) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+# Moer.js [![tnpm](http://npm.taobao.org/badge/v/moer.svg?style=flat-square)](http://npm.taobao.org/package/moer) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/) [![Build Status](https://travis-ci.org/ShirasawaSama/moer.svg?branch=master)](https://travis-ci.org/ShirasawaSama/moer) [![codecov](https://codecov.io/gh/ShirasawaSama/moer/branch/master/graph/badge.svg)](https://codecov.io/gh/ShirasawaSama/moer) [![Coding](https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=Coding)](https://coding.net/u/ncbql/p/moer)
 
 一个全新的 **MVVM** 框架
 

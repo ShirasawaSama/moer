@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - latest
+  - 8.7.0
 script:
   - npm run cov
 after_success: npm run coverage

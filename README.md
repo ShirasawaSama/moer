@@ -10,7 +10,8 @@
 - TypeScript支持
 - 插件API
 - 异步请求数据
-- 体积小 (MIN+GZIP后仅 4.97KB)
+- 基于Proxy捕获数据更新
+- 体积小 (MIN+GZIP后仅 5.2KB)
 - 服务端渲染 (大雾)
 
 ## 语法

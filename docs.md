@@ -1,26 +1,31 @@
-# 语法
+# 使用方法
 
 本例将会以 **TypeScript** 用法作为标准
 
-## 基本用法
+## 语法
+
+### 基本用法
 
 ```typescript
-import moer, { Element, Types } from 'moer'
+import moer, { Element, connect, Types } from 'moer'
 
+@connect // 只有用到全局store的时候才用
 class Index extends Element<void> {
+  store: { str: string }
   render (d: Types) {
     return () => {
       d.div({ className: 'red' }); {
         'Hello World!'
+        d.span(); `${this.store.str}`
       }
     }
   }
 }
 
-moer({ node: new Index() })
+moer({ node: new Index(), data: { str: 'Moer.js' } })
 ```
 
-## 组件化
+### 组件化
 
 ```typescript
 import { Element, Types } from 'moer'
@@ -44,7 +49,7 @@ class Index extends Element<void> {
 }
 ```
 
-## 条件渲染
+### 条件渲染
 
 ```typescript
 import { Element, Types } from 'moer'
@@ -65,7 +70,7 @@ class Index extends Element<void> {
 }
 ```
 
-## Class 与 Style
+### Class 与 Style
 
 ```typescript
 import { Element, Types } from 'moer'
@@ -87,7 +92,7 @@ class Index extends Element<void> {
 }
 ```
 
-## 事件 与 innerHTML
+### 事件 与 innerHTML
 
 ```typescript
 import { Element, Types } from 'moer'
@@ -106,7 +111,7 @@ class Index extends Element<void> {
 }
 ```
 
-## 循环渲染
+### 循环渲染
 
 > 支持 For-Of, For-In, While, Do-While 等语句
 
@@ -127,7 +132,7 @@ class Index extends Element<void> {
 }
 ```
 
-## Switch 语句
+### Switch 语句
 
 ```typescript
 import { Element, Types } from 'moer'
@@ -150,7 +155,7 @@ class Index extends Element<void> {
 }
 ```
 
-## 单次渲染
+### 单次渲染
 
 > 如果数据极大时可以用此方法来减少对比时间
 
@@ -164,4 +169,72 @@ class Index extends Element<void> {
     }
   }
 }
+```
+
+## 其它
+
+### State
+
+```typescript
+import moer, { Element, Types } from 'moer'
+
+class Index extends Element<void> {
+  state = { value: '' }
+  render (d: Types) {
+    return () => {
+      d.div(); {
+        d.input({
+          value: this.state.value,
+          onInput: ({ target: { value } }) => (this.state.value = value)
+        }); {}
+      }
+    }
+  }
+}
+```
+
+### Modal 与 插件
+
+```typescript
+import moer, { Element, Types } from 'moer'
+
+const sleep = time => new Promise(resolve => setTimeout(resolve, time || 0))
+class Model {
+  name = 'model'
+  state = { times: 0 }
+  constructor (plugins: any) {
+    this.router = plugins.router
+  }
+  async add () {
+    await sleep(1000)
+    this.state.times++
+    // await fetch('data.json')
+  }
+  jump () {
+    this.router.push('/login')
+  }
+}
+
+class Router () {
+  onSetup (plugins) {
+    plugins.router = this
+  }
+  push (path) {
+    window.location.hash = path
+  }
+}
+
+class Index extends Element<void> {
+  models: { model: Model }
+  render (d: Types) {
+    return () => {
+      d.div(); {
+        d.a({ onClick: () => this.models.model.jump() }); 'jump'
+        d.button({ onClick: () => this.models.model.add() }); `${this.models.model.state.times}`
+      }
+    }
+  }
+}
+
+moer({ node: new Index(), plugins: [new Plugin()], models: [Model] })
 ```

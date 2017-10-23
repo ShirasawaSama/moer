@@ -20,7 +20,7 @@
 
 ## 起步
 
-[![tnpm](http://npm.taobao.org/badge/v/generator-moer.svg?style=flat-square)](http://npm.taobao.org/package/generator-moer) [![tnpm](http://npm.taobao.org/badge/v/babel-preset-moer.svg?style=flat-square)](http://npm.taobao.org/package/babel-preset-moer)
+**generator-moer** 版本: [![tnpm](http://npm.taobao.org/badge/v/generator-moer.svg?style=flat-square)](http://npm.taobao.org/package/generator-moer)
 
 首先: 使用下面的命令来安装初始化模块
 

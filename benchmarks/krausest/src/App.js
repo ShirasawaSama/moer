@@ -23,55 +23,55 @@ function stopMeasure () {
 export default class App extends Element {
   state = { rows: store.data, selected: store.selected }
 
-  handleClick = e => {
+  handleClick (e) {
     const { action, id } = e.target.dataset
     if (action && id) {
       this[action](Number(id))
     }
   }
-  add = () => {
+  handleAdd () {
     startMeasure('add')
     store.add()
     this.sync()
     stopMeasure()
   }
-  remove = id => {
+  handleRemove (id) {
     startMeasure('remove')
     store.delete(id)
     this.sync()
     stopMeasure()
   }
-  select = id => {
+  handleSelect (id) {
     startMeasure('select')
     store.select(id)
     this.sync()
     stopMeasure()
   }
-  run = () => {
+  handleRun () {
     startMeasure('run')
     store.run()
     this.sync()
     stopMeasure()
   }
-  update = () => {
+  handleUpdate () {
     startMeasure('update')
     store.update()
     this.sync()
     stopMeasure()
   }
-  runLots = () => {
+  handleRunLots () {
     startMeasure('runLots')
     store.runLots()
     this.sync()
     stopMeasure()
   }
-  clear = () => {
+  handleClear () {
     startMeasure('clear')
     store.clear()
     this.sync()
     stopMeasure()
   }
-  swapRows = () => {
+  handleSwapRows () {
     startMeasure('swapRows')
     store.swapRows()
     this.sync()
@@ -91,12 +91,12 @@ export default class App extends Element {
             d.div({ className: 'col-md-6' }); {
               d.div({ className: 'row' }); {
                 d.div({ className: 'col-md-6 smallpad' }); {
-                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'run', onClick: this.run }); 'Create 1,000 rows'
-                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'runlots', onClick: this.runLots }); 'Create 10,000 rows'
-                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'add', onClick: this.add }); 'Append 1,000 rows'
-                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'update', onClick: this.update }); 'Update every 10th row'
-                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'clear', onClick: this.clear }); 'Clear'
-                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'swaprows', onClick: this.swapRows }); 'Swap Rows'
+                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'run', onClick: this.handleRun }); 'Create 1,000 rows'
+                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'runlots', onClick: this.handleRunLots }); 'Create 10,000 rows'
+                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'add', onClick: this.handleAdd }); 'Append 1,000 rows'
+                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'update', onClick: this.handleUpdate }); 'Update every 10th row'
+                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'clear', onClick: this.handleClear }); 'Clear'
+                  d.button({ type: 'button', className: 'btn btn-primary btn-block', id: 'swaprows', onClick: this.handleSwapRows }); 'Swap Rows'
                 }
               }
             }
@@ -108,15 +108,15 @@ export default class App extends Element {
               d.tr({ key: item.id, className: item.id === selected ? 'danger' : void 0 }); {
                 d.td({ className: 'col-md-1' }); `${item.id}`
                 d.td({ className: 'col-md-4' }); {
-                  d.a({ 'data-action': 'select', 'data-id': item.id }); `${item.label}`
+                  d.a({ dataAction: 'select', dataId: item.id }); `${item.label}`
                 }
                 d.td({ className: 'col-md-1' }); {
                   d.a(); {
                     d.span({
                       className: 'glyphicon glyphicon-remove',
-                      'aria-hidden': true,
-                      'data-action': 'remove',
-                      'data-id': item.id
+                      ariaHidden: true,
+                      dataAction: 'remove',
+                      dataId: item.id
                     }); {}
                   }
                 }
@@ -125,7 +125,7 @@ export default class App extends Element {
             }
           }
         }
-        d.span({ className: 'preloadicon glyphicon glyphicon-remove', 'aria-hidden': true }); {}
+        d.span({ className: 'preloadicon glyphicon glyphicon-remove', ariaHidden: true }); {}
       }
     }
   }

@@ -14,6 +14,7 @@ export default function moer ({}: {
   document?: object
 }): any
 export var connect: (Class: Function) => any
+export var noBind: (Function: Function) => any
 
 interface SVGAttributes extends HTMLAttributes {
   accentHeight?: number | string

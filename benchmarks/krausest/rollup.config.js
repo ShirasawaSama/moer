@@ -17,8 +17,8 @@ export default {
     cjs(),
     nodeResolve({ main: true, jsnext: true }),
     babel({
-      exclude: 'node_modules/**',
       babelrc: false,
+      exclude: 'node_modules/**',
       plugins: [
         require('babel-plugin-external-helpers')
       ],

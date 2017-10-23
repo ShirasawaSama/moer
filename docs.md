@@ -92,15 +92,47 @@ class Index extends Element<void> {
 }
 ```
 
+### Render 方法 
+
+```typescript
+import { Element, Types } from 'moer'
+
+class Index1 extends Element<void> {
+  render (d: Types) { // 默认方法
+    return () => {
+      d.div(); {}
+    }
+  }
+}
+class Index2 extends Element<void> {
+  render = (d: Types) => { // 箭头函数
+    d.div(); {}
+  }
+}
+class Index3 extends Element<void> {
+  state = { i: 0 }
+  render = (d: Types) => { // 包含其他语句的箭头函数
+    const { i: id } = this.state
+    return () => {
+      d.div({ id }); {}
+    }
+  }
+}
+```
+
 ### 事件 与 innerHTML
 
 ```typescript
 import { Element, Types } from 'moer'
 
 class Index extends Element<void> {
+  handleClick (checked) { // 以 handle 为开头将会自动绑定当前对象
+    this.state.checked = !this.state.checked
+  }
   render (d: Types) {
     return () => {
       d.div(); {
+        b.a({ onClick: this.handleClick }); 'Click ME!'
         d.button({ onClick: () => alert('Clicked') }); 'click me!'
         d.input({ onInput: ({ target: { value } }) => alert(value) }); {}
 

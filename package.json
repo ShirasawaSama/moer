@@ -1,6 +1,6 @@
 {
   "name": "moer",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "一个MVVM框架",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "precommit": "npm test",
     "fix": "eslint --fix --ext .js index.js rollup.config.js test dev benchmarks src",
     "lint": "eslint --ext .js index.js rollup.config.js test dev benchmarks src",
-    "build": "rollup -c && gzip-size dist/index.js",
+    "build": "rollup -c && rollup -c --environment OUTPUT:esm && gzip-size dist/index.js",
     "start": "rollup -c dev/rollup.config.js --watch",
     "ben:bt": "rollup -c benchmarks/big-table/rollup.config.js",
     "ben:kr": "rollup -c benchmarks/krausest/rollup.config.js",
@@ -49,7 +49,7 @@
     "ava": "^0.22.0",
     "babel-eslint": "^7.2.3",
     "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-moer": "^0.6.0",
+    "babel-preset-moer": "^0.8.0",
     "codecov": "^2.3.1",
     "eslint": "^4.6.1",
     "eslint-config-standard": "^10.2.1",
@@ -65,7 +65,8 @@
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.2.1",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^2.0.1"
+    "rollup-plugin-uglify": "^2.0.1",
+    "uglify-es": "^3.1.5"
   },
   "dependencies": {}
 }

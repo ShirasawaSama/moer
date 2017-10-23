@@ -1,4 +1,5 @@
-export default (Proxy && BaseProxy) || PolyfillProxy
+export default (((typeof window === 'undefined' ? typeof global !== 'undefined' &&
+  global : window) || {}).Proxy && BaseProxy) || PolyfillProxy
 
 export function PolyfillProxy (obj, handler) {
   if (!(this instanceof PolyfillProxy)) {

@@ -18,7 +18,7 @@ export default class Element {
     this.state = store[STATE][id]
   }
   init (id, children) {
-    this.children = children
+    this.children = children == null ? void 0 : children.length > 1 ? children : children[0]
     this[ELEMENT_ID] = id
     return this
   }

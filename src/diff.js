@@ -1,15 +1,11 @@
 import Element from './Element'
-import getRender from './render/render'
-import setAccessor from './render/setAccessor'
-import getElementRender from './render/renderElement'
 
-export default (subscribers, store, models, elms, document) => {
-  const renderNew = getRender(document)
-  const renderElm = getElementRender(subscribers, store, models, elms)
-  return function diff (a, b, dom, id = 0, index = { i: 0 }, parent) {
+export default (setAccessor, renderElm, renderNew, document) =>
+  function diff (a, b, dom, id = 0, index = { i: 0 }, parent) {
     if (b instanceof Element) b = renderElm(b, id)
     const t = getType(b)
     if (t !== 3 && getType(a) !== t) { // 类型不同直接重新渲染
+      if (!b) return { b }
       const d = renderNew(b)
       if (d) index.i++
       return { b, d }
@@ -49,7 +45,7 @@ export default (subscribers, store, models, elms, document) => {
           index.i++
           if (a.a && a.a.once) return { b: a }
           if (a.a || attr) setAccessor(dom, attr, a.a, type === 'svg') // 比较元素attr
-          if (Array.isArray(children) && (!attr || !('innerHTML' in attr))) {
+          if (children && (!attr || !('innerHTML' in attr))) {
             const index = { i: 0 }
             const lclen = a.c ? a.c.length : 0
             children.forEach((node, i) => {
@@ -141,10 +137,10 @@ export default (subscribers, store, models, elms, document) => {
           }
         }
         b.k = post
-        return { b }
     }
+    return { b }
   }
-}
+
 function clearElm (elm, start) {
   const children = elm.childNodes
   let len = children.length

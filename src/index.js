@@ -1,4 +1,4 @@
-import render from './render'
+import render from './core'
 import { ELEMENT_ID } from './symbols'
 
 export default ({

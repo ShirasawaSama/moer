@@ -3,25 +3,25 @@ import 'moer'
 import moer, { Element, connect } from '../index'
 
 @connect
+class Button extends Element {
+  render = d => {
+    d.button({ key: this.children, dataI: this.store.b, onClick: () => console.log(this.children) }); `${this.children}`
+  }
+}
+@connect
 class Index extends Element {
-  render (d) {
-    return {
-      a: { id: 'test' },
-      c: [
-        this.store.a ? { t: 'p', c: ['true'] } : { t: 'h1', c: ['false'] },
-        this.store.a ? { c: ['test'] } : null
-      ]
+  render = d => {
+    d.div({ onClick: () => console.log(1) }); {
+      d.div(); {
+        d.div(); {
+          d.button({ onClick: e => console.log(233) || e.stopPropagation() }); 'fuck'
+        }
+        for (let i = 0; i < this.store.a; i++) {
+          new Button(); `${i}`
+        }
+      }
     }
   }
 }
 
-const store = moer({ node: new Index(), data: { a: true } })
-const s = () => new Promise(resolve => setTimeout(resolve, 10))
-async function u () {
-  store.a = false
-  await s()
-
-  store.a = true
-  await s()
-}
-u()
+moer({ node: new Index(), data: { a: 20, b: 'a' } })

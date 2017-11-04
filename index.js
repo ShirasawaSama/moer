@@ -1,4 +1,4 @@
-import d from './src/start'
+import d from './src'
 import Element from './src/Element'
 import connect from './src/connect'
 

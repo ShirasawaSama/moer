@@ -1,6 +1,4 @@
-import setAccessor from './setAccessor'
-
-export default document => function render (node, parent) {
+export default (document, setAccessor) => function render (node, parent) {
   if (!parent) parent = render(node, true)
   if (node !== null) {
     switch (typeof node) {
@@ -32,7 +30,7 @@ export default document => function render (node, parent) {
           ? document.createElementNS('http://www.w3.org/2000/svg', 'svg')
           : document.createElement(type)
         if (attr) setAccessor(elm, attr, {}, isSvg)
-        if (Array.isArray(children) && (!attr || !('innerHTML' in attr))) {
+        if (children && (!attr || !('innerHTML' in attr))) {
           children.forEach(node => (node = render(node, elm)) && elm.appendChild(node))
         }
         return elm

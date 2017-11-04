@@ -1,6 +1,6 @@
 import 'moer'
 import test from 'ava'
-import start from '../src/start'
+import start from '../src'
 import connect from '../src/connect'
 import Element from '../src/Element'
 import sa from '../src/render/setAccessor'
@@ -11,13 +11,13 @@ const d = new JSDOM('<div></div>').window.document
 test('style', t => {
   let e = d.createElement('div')
 
-  sa(e, { style: 'color: red' })
+  sa()(e, { style: 'color: red' })
   t.is(e.style.color, 'red', 'String')
 
   e = d.createElement('div')
-  sa(e, { style: { fontSize: 20 } })
+  sa()(e, { style: { fontSize: 20 } })
   t.is(e.style.fontSize, '20px', 'IntAddPx')
-  sa(e, {}, { style: { fontSize: 20 } })
+  sa()(e, {}, { style: { fontSize: 20 } })
   t.false(!!e.style.fontSize, 'Delete')
 })
 
@@ -28,7 +28,7 @@ test('event', async t => {
   class Test extends Element {
     render (d) {
       return () => {
-        d.button({ id: 'btn', onClick: this.store.click }); {}
+        d.div({ id: 'btn', onClick: this.store.click }); {}
       }
     }
   }
@@ -39,7 +39,7 @@ test('event', async t => {
       store = start({
         node: new Test(),
         document: dom.window.document,
-        data: { click: () => resolve() }
+        data: { click: resolve }
       })
       dom.window.document.getElementById('btn').click()
     })
@@ -54,7 +54,7 @@ test('event', async t => {
 test('other', t => {
   const e = d.createElement('div')
 
-  sa(e, { className: 'red' })
+  sa()(e, { className: 'red' })
   t.is(e.getAttribute('class'), 'red', 'ClassName')
 
   @connect

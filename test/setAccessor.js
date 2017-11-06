@@ -28,7 +28,12 @@ test('event', async t => {
   class Test extends Element {
     render (d) {
       return () => {
-        d.div({ id: 'btn', onClick: this.store.click }); {}
+        d.div({ onClick: () => {} }); {
+          d.div({ onClick: () => {} }); {}
+          for (let key = 0; key < 2; key++) {
+            d.div({ key, id: 'btn', onClick: this.store.click, onClickCapture: () => {} }); {}
+          }
+        }
       }
     }
   }

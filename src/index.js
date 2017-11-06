@@ -9,10 +9,13 @@ export default ({
   plugins = [],
   models
 }) => {
+  if (!('Symbol' in (typeof window === 'undefined'
+    ? typeof global !== 'undefined' && global : window) || {}) ||
+    !('entries' in Object)) throw new Error('The current browser does not support Moer.js')
   if (!data || typeof data !== 'object' ||
-    Array.isArray(data)) throw new TypeError('Data must be a Object ant not be an Array!')
+    Array.isArray(data)) throw new TypeError('Data must be a Object ant not be an Array')
   if (typeof root === 'string') root = document.querySelector(root)
-  if (!root || typeof root.appendChild !== 'function') throw new TypeError('Root must be a html element!')
+  if (!root || typeof root.appendChild !== 'function') throw new TypeError('Root must be a html element')
   if (typeof models === 'function') {
     models = models
       .keys()

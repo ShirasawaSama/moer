@@ -7,6 +7,7 @@ import Element from '../src/Element'
 import connect from '../src/connect'
 import { PolyfillProxy, BaseProxy } from '../src/proxy-polyfill'
 import { CONNECTED, keySplit } from '../src/symbols'
+import { startsWith, endsWith } from '../src/helpers'
 
 test('connect', t => {
   @connect
@@ -56,8 +57,6 @@ test('BaseProxy', async t => {
 })
 
 test('store', t => {
-  t.throws(() => addProxy('test'), null, '非Object调用addProxy')
-
   const handler = { current: '0', listener: { '0': [] }, actions: {} }
 
   let name
@@ -131,3 +130,17 @@ class Test extends Element {
     }
   }
 }
+
+test('helpers', t => {
+  t.true(startsWith())
+  t.true(startsWith('abc', ''))
+  t.true(startsWith('abc', 'ab'))
+  t.false(startsWith('abc', 'ad'))
+  t.false(startsWith('abc', 'abcd'))
+
+  t.true(endsWith())
+  t.true(endsWith('abc', ''))
+  t.true(endsWith('abc', 'bc'))
+  t.false(endsWith('abc', 'fc'))
+  t.false(endsWith('abc', 'wabc'))
+})

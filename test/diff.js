@@ -21,7 +21,7 @@ test('array', async t => {
   }
   const dom = new JSDOM('<div id="root"></div>')
   const doc = dom.window.document
-  const store = start({ node: new Test(), document: doc, data: { a: data.slice() } })
+  const store = start({ node: new Test(), document: doc, data: { a: data.slice(), w: 'a' } })
 
   store.a.push('hello')
   await new Promise(resolve => setTimeout(() => resolve(
@@ -70,6 +70,35 @@ test('array', async t => {
       .getElementById('test')
       .childElementCount, 0, 'clear')
   ), 10))
+
+  @connect
+  class I extends Element {
+    render = d => {
+      d.div(); `${this.store.w}`
+    }
+  }
+  @connect
+  class Test2 extends Element {
+    render (d) {
+      return () => {
+        d.div({ id: 'test' }); {
+          for (let i = 0; i < 2; i++) {
+            key: i
+            new I(); {}
+          }
+        }
+      }
+    }
+  }
+  const dom2 = new JSDOM('<div id="root"></div>')
+  const doc2 = dom2.window.document
+  start({ node: new Test2(), document: doc2, data: { w: 'a' } }).w = 'ererer'
+  await new Promise(resolve => setTimeout(() => resolve(
+    t.true(doc2
+      .getElementById('test')
+      .innerHTML
+      .includes('ererer'), 'connect')
+  ), 10))
 })
 
 test('if', async t => {
@@ -113,7 +142,7 @@ test('if', async t => {
     t.is(doc
       .getElementById('test')
       .innerHTML, 'gggtrue', 'update')
-  ), 10))
+  ), 100))
 
   @connect
   class Test2 extends Element {

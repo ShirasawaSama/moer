@@ -8,10 +8,12 @@
 - 高性能渲染组件
 - Model层分离
 - TypeScript支持
+- 事件代理
 - 插件API
 - 异步请求数据
 - 基于Proxy捕获数据更新
-- 体积小 (MIN+GZIP后仅 5.2KB)
+- 体积小 (MIN+GZIP后仅 5.8KB)
+- 支持IE9 (必须使用babel-polyfill)
 - 服务端渲染 (大雾)
 
 ## 语法

@@ -151,12 +151,17 @@ class Index extends Element<void> {
 import { Element, Types } from 'moer'
 
 const arr = ['a', 'b', 'c']
+class B extends Element<number> { render = (d: Types) => { d.button(); `${this.props}` } }
 class Index extends Element<void> {
   render (d: Types) {
     return () => {
       d.div(); {
-        for (const i of arr) {
-          d.span({ key: i }); `${i}` // 注意: 必须要设置 Key, 且 Key 只能唯一 !!
+        for (const key of arr) {
+          d.span({ key }); `${key}` // 注意: 必须要设置 Key, 且 Key 只能唯一 !!
+        }
+        for (let i = 0; i < 10; i++) {
+          key: i // 注意: 若循环内包含组件则必须这样设置 Key, 且 Key 只能唯一 !!
+          new B(i); {}
         }
       }
     }

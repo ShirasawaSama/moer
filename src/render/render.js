@@ -14,7 +14,9 @@ export default (document, setAccessor) => function render (node, parent) {
               parent.appendChild(dom)
               if (elm.a) {
                 const key = elm.a.key
-                if (key in keys) throw new Error('组件Key相同: ' + key); else keys[key] = i
+                if (key in keys) {
+                  throw new Error('The KEY of Element has the same or no definition: ' + key)
+                } else keys[key] = i
               }
             }
             i++

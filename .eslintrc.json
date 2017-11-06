@@ -8,9 +8,11 @@
   ],
   "parser": "babel-eslint",
   "rules": {
+    "no-new": "off",
+    "no-var": "error",
+    "no-labels": "off",
     "no-lone-blocks": ["off"],
-    "no-unused-expressions": "off",
-    "no-new": "off"
+    "no-unused-expressions": "off"
   },
   "env": {
     "jest": true

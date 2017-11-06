@@ -23,7 +23,7 @@ class Index extends Element {
     filter: ''
   }
   matches (item) {
-    return item.value.includes(this.state.filter)
+    return ~item.value.indexOf(this.state.filter)
   }
   visibleCount () {
     let count = 0
@@ -72,7 +72,7 @@ class Index extends Element {
           d.strong(); 'Filter Data:'
           d.input({ type: 'text', onInput: e => (this.state.filter = e.target.value) }); {}
           if (this.state.filter) {
-            '&mdash; Filtering'
+            '— Filtering'
             d.strong(); `${this.state.filter}`
             ;`over ${this.state.dataPoints} data points, ${this.visibleCount()} found.`
           }

@@ -1,9 +1,7 @@
 export class Element<Props> {
   constructor (props?: Props)
-  props: Props
+  readonly props: Props
   render (elements: Types): Function
-  preRender (): void
-  postRender (): void
 }
 export default function moer ({}: {
   node: Element<any>,
@@ -14,7 +12,6 @@ export default function moer ({}: {
   document?: object
 }): any
 export var connect: (Class: Function) => any
-export var noBind: (Function: Function) => any
 
 interface SVGAttributes extends HTMLAttributes {
   accentHeight?: number | string
@@ -374,6 +371,102 @@ interface DOMAttributes {
 
   // Transition Events
   onTransitionEnd?: TransitionEventHandler
+
+  // Capture
+  // Image Events
+  onLoadCapture?: GenericEventHandler
+  
+    // Clipboard Events
+  onCopyCapture?: ClipboardEventHandler
+  onCutCapture?: ClipboardEventHandler
+  onPasteCapture?: ClipboardEventHandler
+
+  // Composition Events
+  onCompositionEndCapture?: CompositionEventHandler
+  onCompositionStartCapture?: CompositionEventHandler
+  onCompositionUpdateCapture?: CompositionEventHandler
+
+  // Focus Events
+  onFocusCapture?: FocusEventHandler
+  onBlurCapture?: FocusEventHandler
+
+  // Form Events
+  onChangeCapture?: GenericEventHandler
+  onInputCapture?: GenericEventHandler
+  onSearchCapture?: GenericEventHandler
+  onSubmitCapture?: GenericEventHandler
+
+  // Keyboard Events
+  onKeyDownCapture?: KeyboardEventHandler
+  onKeyPressCapture?: KeyboardEventHandler
+  onKeyUpCapture?: KeyboardEventHandler
+
+  // Media Events
+  onAbortCapture?: GenericEventHandler
+  onCanPlayCapture?: GenericEventHandler
+  onCanPlayThroughCapture?: GenericEventHandler
+  onDurationChangeCapture?: GenericEventHandler
+  onEmptiedCapture?: GenericEventHandler
+  onEncryptedCapture?: GenericEventHandler
+  onEndedCapture?: GenericEventHandler
+  onLoadedDataCapture?: GenericEventHandler
+  onLoadedMetadataCapture?: GenericEventHandler
+  onLoadStartCapture?: GenericEventHandler
+  onPauseCapture?: GenericEventHandler
+  onPlayCapture?: GenericEventHandler
+  onPlayingCapture?: GenericEventHandler
+  onProgressCapture?: GenericEventHandler
+  onRateChangeCapture?: GenericEventHandler
+  onSeekedCapture?: GenericEventHandler
+  onSeekingCapture?: GenericEventHandler
+  onStalledCapture?: GenericEventHandler
+  onSuspendCapture?: GenericEventHandler
+  onTimeUpdateCapture?: GenericEventHandler
+  onVolumeChangeCapture?: GenericEventHandler
+  onWaitingCapture?: GenericEventHandler
+
+  // MouseEvents
+  onClickCapture?: MouseEventHandler
+  onContextMenuCapture?: MouseEventHandler
+  onDblClickCapture?: MouseEventHandler
+  onDragCapture?: DragEventHandler
+  onDragEndCapture?: DragEventHandler
+  onDragEnterCapture?: DragEventHandler
+  onDragExitCapture?: DragEventHandler
+  onDragLeaveCapture?: DragEventHandler
+  onDragOverCapture?: DragEventHandler
+  onDragStartCapture?: DragEventHandler
+  onDropCapture?: DragEventHandler
+  onMouseDownCapture?: MouseEventHandler
+  onMouseEnterCapture?: MouseEventHandler
+  onMouseLeaveCapture?: MouseEventHandler
+  onMouseMoveCapture?: MouseEventHandler
+  onMouseOutCapture?: MouseEventHandler
+  onMouseOverCapture?: MouseEventHandler
+  onMouseUpCapture?: MouseEventHandler
+
+  // Selection Events
+  onSelectCapture?: GenericEventHandler
+
+  // Touch Events
+  onTouchCancelCapture?: TouchEventHandler
+  onTouchEndCapture?: TouchEventHandler
+  onTouchMoveCapture?: TouchEventHandler
+  onTouchStartCapture?: TouchEventHandler
+
+  // UI Events
+  onScrollCapture?: UIEventHandler
+
+  // Wheel Events
+  onWheelCapture?: WheelEventHandler
+
+  // Animation Events
+  onAnimationStartCapture?: AnimationEventHandler
+  onAnimationEndCapture?: AnimationEventHandler
+  onAnimationIterationCapture?: AnimationEventHandler
+
+  // Transition Events
+  onTransitionEndCapture?: TransitionEventHandler
 }
 
 interface HTMLAttributes extends DOMAttributes {
@@ -489,7 +582,7 @@ interface HTMLAttributes extends DOMAttributes {
   srcSet?: string
   start?: number
   step?: number | string
-  style?: any
+  style?: string | CSSStyleDeclaration
   summary?: string
   tabIndex?: number
   target?: string

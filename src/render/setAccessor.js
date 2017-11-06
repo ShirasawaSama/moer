@@ -1,4 +1,4 @@
-// This code is from the Preact project.
+import { endsWith, startsWith } from '../helpers'
 
 const XLINK = /^xlink:?/
 const NON_DIM = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
@@ -100,9 +100,9 @@ export default (root, tree) => {
               }
             }
           }
-        } else if (name.startsWith('on')) {
+        } else if (startsWith(name, 'on')) {
           const len = name.length
-          name = name.toLowerCase().substring(2, name.endsWith('Capture') ? len - 7 : len)
+          name = name.toLowerCase().substring(2, endsWith(name, 'Capture') ? len - 7 : len)
           if (value && !(name in events)) {
             events[name] = true
             root.addEventListener(name, eventProxy, true)

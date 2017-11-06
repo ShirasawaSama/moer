@@ -10,11 +10,11 @@ function startMeasure (name) {
   lastMeasure = name
 }
 function stopMeasure () {
-  var last = lastMeasure
+  const last = lastMeasure
   if (lastMeasure) {
     window.setTimeout(() => {
       lastMeasure = null
-      var stop = window.performance.now()
+      const stop = window.performance.now()
       console.log(last + ' took ' + (stop - startTime - 10))
     }, 10)
   }

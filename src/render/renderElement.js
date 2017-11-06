@@ -1,4 +1,5 @@
 import Element from '../Element'
+import { startsWith } from '../helpers'
 import { CONNECTED, ELEMENT_ID } from '../symbols'
 
 export default (subscribers, data, models, elms, postRenders) => function renderElement (node, id) {
@@ -31,7 +32,7 @@ export default (subscribers, data, models, elms, postRenders) => function render
     if (len) actions.add(array[len - 1])
     for (let i = 0; i < len - 1; i++) {
       const key = array[i]
-      if (key in unless || !array[i + 1].startsWith(key)) actions.add(key)
+      if (key in unless || !startsWith(array[i + 1], key)) actions.add(key)
       else unless[key] = null
     }
     const result = new Array(actions.size)

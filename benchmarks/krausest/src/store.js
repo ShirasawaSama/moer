@@ -9,11 +9,11 @@ export default class Store {
     this.id = 1
   }
   buildData (count = 1000) {
-    var adjectives = ['pretty', 'large', 'big', 'small', 'tall', 'short', 'long', 'handsome', 'plain', 'quaint', 'clean', 'elegant', 'easy', 'angry', 'crazy', 'helpful', 'mushy', 'odd', 'unsightly', 'adorable', 'important', 'inexpensive', 'cheap', 'expensive', 'fancy']
-    var colours = ['red', 'yellow', 'blue', 'green', 'pink', 'brown', 'purple', 'brown', 'white', 'black', 'orange']
-    var nouns = ['table', 'chair', 'house', 'bbq', 'desk', 'car', 'pony', 'cookie', 'sandwich', 'burger', 'pizza', 'mouse', 'keyboard']
-    var data = []
-    for (var i = 0; i < count; i++) {
+    const adjectives = ['pretty', 'large', 'big', 'small', 'tall', 'short', 'long', 'handsome', 'plain', 'quaint', 'clean', 'elegant', 'easy', 'angry', 'crazy', 'helpful', 'mushy', 'odd', 'unsightly', 'adorable', 'important', 'inexpensive', 'cheap', 'expensive', 'fancy']
+    const colours = ['red', 'yellow', 'blue', 'green', 'pink', 'brown', 'purple', 'brown', 'white', 'black', 'orange']
+    const nouns = ['table', 'chair', 'house', 'bbq', 'desk', 'car', 'pony', 'cookie', 'sandwich', 'burger', 'pizza', 'mouse', 'keyboard']
+    const data = []
+    for (let i = 0; i < count; i++) {
       data.push({
         id: this.id++,
         label: adjectives[_random(adjectives.length)] + ' ' + colours[_random(colours.length)] + ' ' + nouns[_random(nouns.length)]
@@ -23,7 +23,7 @@ export default class Store {
   }
   updateData (mod = 10) {
     // Just assigning setting each tenth this.data doesn't cause a redraw, the following does:
-    var newData = []
+    const newData = []
     for (let i = 0; i < this.data.length; i++) {
       if (i % 10 === 0) {
         newData[i] = Object.assign({}, this.data[i], {
@@ -65,7 +65,7 @@ export default class Store {
       let d4 = this.data[4]
       let d9 = this.data[9]
 
-      var newData = this.data.map(function (data, i) {
+      const newData = this.data.map(function (data, i) {
         if (i === 4) {
           return d9
         } else if (i === 9) {

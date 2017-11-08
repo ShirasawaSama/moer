@@ -4,21 +4,24 @@ import Element from './Element'
 import getRender from './render/render'
 import getSetAccessor from './render/setAccessor'
 import getElementRender from './render/renderElement'
-import { ELEMENT, STATE } from './symbols'
+import { STATE, ELEMENT } from './symbols'
 
-// const getValue = (elm, path) => path.reduce((e, i) => Array.isArray(e)
-//   ? e[i] : e && e.c && e.c[i], elm)
-// const getElement = (elm, path) => path.reduce((e, i) => e.childNodes[i], elm)
-export default (document, node, dom, data, models) => {
-  const subscribers = { current: null, listener: {}, actions: {} }
+export default (document, node, dom, data, plugins, models) => {
   const ids = {}
-  let postRenders = []
-  const actions = new Set()
-  const actionAdd = actions.add.bind(actions)
-  data[STATE] = {}
-  data.models = models.reduce((p, m) => (p[m.name] = typeof m.state === 'object' ? m.state : {}) && p, {})
-  data = addProxy(data, subscribe, subscribers)
   const mods = {}
+  const setup = {}
+  let postRenders = []
+  const pluginsData = {}
+  const actions = new Set()
+  const subscribers = { current: null, listener: {}, actions: {} }
+
+  const actionAdd = actions.add.bind(actions)
+  data = addProxy(data, subscribe, subscribers)
+  plugins.forEach(p => p && typeof p.onSetup === 'function' &&
+    p.onSetup(setup, data, pluginsData))
+  models = models.map(Model => new Model(setup)).filter(model => model.name)
+  data.models = models.reduce((p, m) => (p[m.name] = typeof m.state === 'object'
+    ? m.state : {}) && p, {})
   for (const model of models) {
     const name = model.name
     model.store = data
@@ -27,18 +30,22 @@ export default (document, node, dom, data, models) => {
     mods[name] = model
   }
   models = null
-  const renderElm = getElementRender(subscribers, data, mods, ids, postRenders)
+  const renderElm = getElementRender(subscribers, data, mods, ids,
+    data[STATE], postRenders, pluginsData)
   const tree = gen(node)
   subscribers.current = null
   const setAccessor = getSetAccessor(dom, tree)
   const render = getRender(document, setAccessor)
+  const diff = getDiff(setAccessor, renderElm, render, document)
   if (tree) {
     const child = render(tree, dom)
     if (child) dom.appendChild(child)
   }
-  postRenders.forEach(f => f.f.call(f.o))
-  postRenders = null
-  const diff = getDiff(setAccessor, renderElm, render, document)
+  for (const i in postRenders) {
+    const f = postRenders[i]
+    f.f.call(f.o)
+  }
+  postRenders = {}
   return data
 
   function active () {
@@ -54,6 +61,11 @@ export default (document, node, dom, data, models) => {
       diff(e, e[ELEMENT].render(), d, id)
     })
     actions.clear()
+    for (const i in postRenders) {
+      const f = postRenders[i]
+      f.f.call(f.o)
+    }
+    postRenders = {}
   }
   function subscribe (name) {
     if (!subscribers.actions[name]) return

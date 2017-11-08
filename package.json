@@ -1,6 +1,6 @@
 {
   "name": "moer",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "一个MVVM框架",
   "main": "dist/moer.js",
   "scripts": {

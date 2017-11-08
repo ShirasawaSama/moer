@@ -1,5 +1,5 @@
 import render from './core'
-import { ELEMENT_ID } from './symbols'
+import { ELEMENT_ID, STATE } from './symbols'
 
 export default ({
   node,
@@ -26,18 +26,16 @@ export default ({
       })
   }
   if (!node[ELEMENT_ID]) node.init((new Date().getTime() + Math.random()) * 100000)
-  const setup = {}
-  plugins.forEach(p => p && typeof p.onSetup === 'function' && p.onSetup(setup))
+  data[STATE] = {}
+  data.plugins = {}
   return render(
     document,
     node,
     root,
     data,
+    plugins,
     Array.isArray(models)
-      ? models
-        .filter(model => typeof model === 'function')
-        .map(Model => new Model(setup))
-        .filter(model => model.name)
+      ? models.filter(model => typeof model === 'function')
       : []
   )
 }
